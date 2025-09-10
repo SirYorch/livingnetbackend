@@ -28,7 +28,6 @@ public class UsuarioDAO {
                     .setParameter("name", name)
                     .setParameter("password", password)
                     .getSingleResult();
-                
         } catch (Exception e) {
             return null;
         }

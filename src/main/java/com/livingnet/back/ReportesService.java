@@ -10,33 +10,51 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/reportes")
+@RequestMapping("/reports")
 
 
 //clase de servicio, maneja la recepción y envío de datos mediante solicitudes de usuario
 public class ReportesService {
 
+    private final ReportesGestion reportesGestion;
+
+    public ReportesService(ReportesGestion reportesGestion) {
+        this.reportesGestion = reportesGestion;
+    }
+
     // obtener todos los reportes
     @GetMapping
     public List<ReporteModel> getReportes() {
-        return ReportesGestion.getReportes();
+        return reportesGestion.getReportes();
     }
 
     // agregar un nuevo reporte
     @PostMapping
     public ReporteModel addReporte(@RequestBody ReporteModel reporte) {
-        return ReportesGestion.addReporte(reporte);
+        
+        
+        try{
+            return  reportesGestion.addReporte(reporte);
+        } catch (Exception e) {
+            System.out.println("Error al agregar el reporte: " + e);
+            return null;
+        }
     }
 
     // actualizar un reporte según su id
-    @PutMapping("/{id}")
-    public ReporteModel updateReporte(@PathVariable int id, @RequestBody ReporteModel reporte) {
-        return ReportesGestion.updateReporte(id, reporte);
+    @PutMapping
+    public ReporteModel updateReporte(@RequestBody ReporteModel reporte) {
+        ReporteModel dato  =  reportesGestion.updateReporte(reporte);
+        System.out.println(dato);
+        return dato;
+        
     }
 
     // eliminar un reporte según su id
     @DeleteMapping("/{id}")
-    public boolean deleteReporte(@PathVariable int id) {
-        return ReportesGestion.deleteReporte(id);
+    public boolean deleteReporte(@PathVariable Long id) {
+        boolean dato  =  reportesGestion.deleteReporte(id);
+        System.out.println(dato);
+        return dato;
     }
 }

@@ -1,5 +1,9 @@
 package com.livingnet.back;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +24,29 @@ public class UsuarioService {
 
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody UsuarioModel usuario) {
+    public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
         try {
-            System.out.println("Intento de login para: " + usuario.getName()+ " con password: " + usuario.getPassword());
+            System.out.println("Intento de login para: " + usuario.getName() + " con password: " + usuario.getPassword());
             UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getName(), usuario.getPassword());
-            System.out.println("usuario"+ usuarioEncontrado);
+            
             if (usuarioEncontrado != null) {
                 String token = JwtUtil.generateToken(usuarioEncontrado.getName());
                 
-                return ResponseEntity.ok(token);
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+                response.put("usuario", usuarioEncontrado.getName());
+                
+                return ResponseEntity.ok(response);
             } else {
-                System.out.println("Credenciales incorrectas para: " + usuario.getName());
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                        .body(Collections.singletonMap("error", "Credenciales incorrectas"));
             }
         } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");           }
-   }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                    .body(Collections.singletonMap("error", "Credenciales incorrectas"));
+        }
+    }
+
 
    @GetMapping("/hello")
     public ResponseEntity<String> hello() {

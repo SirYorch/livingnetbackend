@@ -25,10 +25,9 @@ public class JwtFilter implements Filter {
             String token = authHeader.substring(7);
             try {
                 String username = jwtUtil.extractUsername(token);
-                System.out.println("✅ Token válido. Usuario: " + username);
+                System.out.println("Token válido. Usuario: " + username);
                 if(username == null) {
-                    ((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token inválido");
-                    return;
+                    throw new Exception("Usuario no encontrado en el token");
                 }
                 chain.doFilter(request, response);
             } catch (Exception e) {
