@@ -1,4 +1,4 @@
-package com.livingnet.back;
+package com.livingnet.back.JWT;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;

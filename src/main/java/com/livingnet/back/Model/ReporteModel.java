@@ -51,7 +51,6 @@ public class ReporteModel {
 
     public ReporteModel() {}
 
-
     public long getId() {
         return this.id;
     }

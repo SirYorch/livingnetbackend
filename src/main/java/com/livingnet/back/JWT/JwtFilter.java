@@ -1,4 +1,4 @@
-package com.livingnet.back;
+package com.livingnet.back.JWT;
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -16,9 +16,13 @@ public class JwtFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("Se está filtrando la solicitud...");
+        
 
         HttpServletRequest req = (HttpServletRequest) request;
+
+        System.out.println(req.getHeader("content-type"));
+
+
         String authHeader = req.getHeader("Authorization"); // "Bearer <token>"
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {

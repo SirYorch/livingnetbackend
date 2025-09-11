@@ -1,4 +1,4 @@
-package com.livingnet.back;
+package com.livingnet.back.JWT;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -16,8 +16,7 @@ public class JwtUtil {
     public JwtUtil() {
 
     }
-
-    // clave secreta (HMAC). En producción, deberías sacarla de variables de entorno.
+    
     private static final SecretKey key = Keys.hmacShaKeyFor("JHASGDjvbadbvaisdhg29138-)(*&^VAGV2)".getBytes());
 
     public static String generateToken(String username) {
@@ -34,7 +33,7 @@ public class JwtUtil {
             // 🔹 Claims
             .subject(username)                        // usuario (subject)
             .issuedAt(new Date())                     // fecha de creación
-            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 10)) // expira en 10 minutos
+            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // expira en 10 minutos
             .issuer("mi-app")                         // quién emitió el token
             .claim("role", "USER")                    // puedes agregar claims personalizados
             .signWith(key)                            // firmar con clave secreta

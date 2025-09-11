@@ -1,4 +1,4 @@
-package com.livingnet.back;
+package com.livingnet.back.Servicios;
 
 import org.springframework.web.bind.annotation.*;
 
