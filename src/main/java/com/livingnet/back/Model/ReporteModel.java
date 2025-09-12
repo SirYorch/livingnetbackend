@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "reports")
+@Table(name = "reportes")
 public class ReporteModel {
     
     @Id
@@ -37,8 +37,6 @@ public class ReporteModel {
 
     private double kilometraje_inicio;
     private double kilometraje_fin;
-    
-    private boolean retraso;
     
     private int router;
     private int onu;
@@ -185,18 +183,6 @@ public class ReporteModel {
 
     public void setClima(String clima) {
         this.clima = clima;
-    }
-
-    public boolean isRetraso() {
-        return this.retraso;
-    }
-
-    public boolean getRetraso() {
-        return this.retraso;
-    }
-
-    public void setRetraso(boolean retraso) {
-        this.retraso = retraso;
     }
 
     public String getMotivo_retraso() {

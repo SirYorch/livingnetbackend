@@ -15,15 +15,12 @@ public class JwtFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
         
+        throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
 
-        System.out.println(req.getHeader("content-type"));
-
-
-        String authHeader = req.getHeader("Authorization"); // "Bearer <token>"
+        String authHeader = req.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);

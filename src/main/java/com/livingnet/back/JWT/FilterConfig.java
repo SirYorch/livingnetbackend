@@ -14,6 +14,8 @@ public class FilterConfig {
         registrationBean.setFilter(new JwtFilter());
         registrationBean.addUrlPatterns("/test/*");
         registrationBean.addUrlPatterns("/reports/*");
+        registrationBean.addUrlPatterns("/validate/*");
+        registrationBean.addUrlPatterns("/image/*");
         return registrationBean;
     }
 }
