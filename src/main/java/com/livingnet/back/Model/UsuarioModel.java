@@ -20,10 +20,10 @@ public class UsuarioModel {
     @Column(unique = true, nullable = false)
     private String mail;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = false, nullable = false)
     private String password;
     
-    @Column(unique = true, nullable = false)
+    @Column(unique = false, nullable = false)
     private String rol;
 //      TECNICO SECRETARIA ADMINISTRADOR
 
@@ -43,10 +43,10 @@ public class UsuarioModel {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getmail() {
+    public String getMail() {
         return mail;
     }
-    public void setmail(String mail) {
+    public void setMail(String mail) {
         this.mail = mail;
     }
     public String getPassword() {

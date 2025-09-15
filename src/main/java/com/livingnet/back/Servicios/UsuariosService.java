@@ -1,11 +1,14 @@
 package com.livingnet.back.Servicios;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
-import com.livingnet.back.Gestion.UsuarioGestion;
 
+import com.livingnet.back.Gestion.UsuarioGestion;
 import com.livingnet.back.Model.UsuarioModel;
+import com.livingnet.back.Model.UsuarioRequest;
+import com.livingnet.back.Model.UsuarioSend;;
 
 
 // clase de servicio de usuarios, maneja las solicitudes HTTP
@@ -21,12 +24,18 @@ public class UsuariosService {
 
     // obtener todos los Usuarios
     @GetMapping
-    public List<UsuarioModel> getUsuarios() {
+    public List<UsuarioSend> getUsuarios() {
         List<UsuarioModel> usuarios = usuarioGestion.getUsuarios();
-        for(UsuarioModel usuario : usuarios){
-            usuario.setPassword(null);
+        List<UsuarioSend> usuariosEnviar = new ArrayList<>(usuarios.size());
+        for (int i = 0; i < usuarios.size(); i++) {
+            UsuarioModel u = usuarios.get(i);
+            UsuarioSend s = new UsuarioSend();
+            s.setId(u.getId());
+            s.setRol(u.getRol());  // asegúrate que el método sea setRol()
+            s.setMail(u.getMail());
+            usuariosEnviar.add(s);
         }
-        return usuarios;
+        return usuariosEnviar;
     }
 
     // agregar un nuevo Usuario
@@ -40,7 +49,7 @@ public class UsuariosService {
             if (usuario.getPassword().equals(usuario.getConfirmPassword())){
                 UsuarioModel usuarioModel =new UsuarioModel();
                 usuarioModel.setPassword(usuario.getPassword());
-                usuarioModel.setmail(usuario.getMail());
+                usuarioModel.setMail(usuario.getMail());
                 usuarioModel.setRol(usuario.getRol());
                 
                 return  usuarioGestion.addUsuario(usuarioModel);
@@ -60,7 +69,7 @@ public class UsuariosService {
         if(usuario.getPassword().equals(usuario.getConfirmPassword())){
             usuarioModel.setId(usuario.getId());
             usuarioModel.setPassword(usuario.getPassword());
-            usuarioModel.setmail(usuario.getMail());
+            usuarioModel.setMail(usuario.getMail());
             usuarioModel.setRol(usuario.getRol());
             
             usuarioGestion.updateUsuario(usuarioModel);

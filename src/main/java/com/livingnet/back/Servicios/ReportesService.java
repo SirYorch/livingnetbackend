@@ -3,6 +3,7 @@ package com.livingnet.back.Servicios;
 import org.springframework.web.bind.annotation.*;
 
 import com.livingnet.back.Model.ReporteModel;
+import com.livingnet.back.Model.ReporteRequest;
 import com.livingnet.back.Gestion.ReportesGestion;
 
 import java.util.List;
@@ -26,6 +27,16 @@ public class ReportesService {
     @GetMapping
     public List<ReporteModel> getReportes() {
         return reportesGestion.getReportes();
+    }
+    
+    @GetMapping("/filters")
+    public List<ReporteModel> getReportesFiltros(@RequestBody ReporteRequest body) {
+        return reportesGestion.getReportesFiltros(body);
+    }
+
+    @GetMapping("/quantity")
+    public Long getCantidadReportes() {
+        return reportesGestion.getCantidadReportes();
     }
 
     // agregar un nuevo reporte

@@ -27,13 +27,13 @@ public class LoginService {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
         try {
-            UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getmail(), usuario.getPassword());    
+            UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getMail(), usuario.getPassword());    
             if (usuarioEncontrado != null) {
                 String token = JwtUtil.generateToken(usuarioEncontrado);
                 
                 Map<String, String> response = new HashMap<>();
                 response.put("token", token);
-                response.put("usuario", usuarioEncontrado.getmail());
+                response.put("usuario", usuarioEncontrado.getMail());
                 
                 return ResponseEntity.ok(response);
             } else {

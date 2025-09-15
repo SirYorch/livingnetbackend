@@ -43,7 +43,7 @@ public class UsuarioDAO {
 
     @Transactional
     public UsuarioModel save(UsuarioModel usuario) {
-        System.out.println(usuario.getRol()+" "+usuario.getmail()+" "+usuario.getPassword()+" "+ usuario.getId());
+        System.out.println(usuario.getRol()+" "+usuario.getMail()+" "+usuario.getPassword()+" "+ usuario.getId());
         em.persist(usuario);
         return usuario;
     }

@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/image")
 public class ImageProcessing {
 
-    private static final String UPLOAD_DIR = "uploads/";
+    public static final String UPLOAD_DIR = "uploads/";
 
     // POST /image/upload
     @PostMapping("/upload")

@@ -1,4 +1,4 @@
-package com.livingnet.back.Servicios;
+package com.livingnet.back.Model;
 
 // DTO para registrar un usuario con confirmación de contraseña
 public class UsuarioRequest {

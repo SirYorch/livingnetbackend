@@ -39,7 +39,7 @@ public class JwtUtil {
                 .add(commonHeaders)                   // headers comunes
                 .and()
             // 🔹 Claims
-            .subject(user.getmail())                        // usuario (subject)
+            .subject(user.getMail())                        // usuario (subject)
             .issuedAt(new Date())                     // fecha de creación
             .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * tiempoRol)) // expira dependiento el tipo de usuario
             .issuer("reportsapp")                         // quién emitió el token
