@@ -11,6 +11,7 @@ public class Validation {
 
     @GetMapping
     public String validate() {
+        System.out.println("Validado");
         return "Validación exitosa";
     }
 }

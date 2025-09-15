@@ -2,6 +2,7 @@ package com.livingnet.back.Model;
 
 import java.util.Date;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,34 +17,58 @@ public class ReporteModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
+    @Column(nullable = false)
     private Date fecha;
+    @Column(nullable = false)
     private Date horainicio;
+    @Column(nullable = false)
     private Date horafin;
 
-
+    @Column(nullable = false)
     private String agencia;
+    @Column(nullable = false)
     private String actividad;
+    @Column(nullable = false)
     private String cuadrilla;
+    @Column(nullable = false)
     private String jefe_cuadrilla;  
+    @Column(nullable = true)
     private String ayudante_tecnico;
+    @Column(nullable = false)
     private String tipo_actividad;
+    @Column(nullable = false)
     private String formato_actividad;   
+    @Column(nullable = false)
     private String complejidad_actividad;
+    @Column(nullable = false)
     private String estado_actividad;
+    @Column(nullable = false)
     private String clima;
+    @Column(nullable = true)
     private String motivo_retraso;
+    @Column(nullable = true)
     private String observaciones;
+    @Column(nullable = false)
     private String foto_url;
 
+    @Column(nullable = true)
     private double kilometraje_inicio;
+    @Column(nullable = true)
     private double kilometraje_fin;
     
+    @Column(nullable = false)
     private int router;
+    @Column(nullable = false)
     private int onu;
+    @Column(nullable = false)
     private int drop;
+    @Column(nullable = false)
     private int roseta;
+    @Column(nullable = false)
     private int tensores;
+    @Column(nullable = false)
     private int conectores;
+    @Column(nullable = false)
     private int camara;
     
 

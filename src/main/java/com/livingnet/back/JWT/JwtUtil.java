@@ -7,6 +7,8 @@ import io.jsonwebtoken.JwtException;
 
 import javax.crypto.SecretKey;
 
+import com.livingnet.back.Model.UsuarioModel;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -19,23 +21,28 @@ public class JwtUtil {
     
     private static final SecretKey key = Keys.hmacShaKeyFor("JHASGDjvbadbvaisdhg29138-)(*&^VAGV2)".getBytes());
 
-    public static String generateToken(String username) {
+    public static String generateToken(UsuarioModel user) {
         Map<String, Object> commonHeaders = Map.of("alg", "HS256", "typ", "JWT");
-        System.out.println("🔐 Generando token para usuario: " + username);
+        int tiempoRol = 0;
+        System.out.println("Generando token para usuario: " + user.getRol());
+        if( user.getRol().equals("ADMINISTRADOR")){
+            tiempoRol = 120; // 2 horas
+        } else if ( user.getRol().equals("TECNICO")){
+            tiempoRol = 10; // 10 minutos
+        } else if ( user.getRol().equals("SECRETARIA")){
+            tiempoRol = 60 * 4; //4 horas
+        }
         return Jwts.builder()
 
             // 🔹 Headers
             .header()
                 .add(commonHeaders)                   // headers comunes
-                .add("specificHeader", "myValue")     // un header específico opcional
                 .and()
-
             // 🔹 Claims
-            .subject(username)                        // usuario (subject)
+            .subject(user.getmail())                        // usuario (subject)
             .issuedAt(new Date())                     // fecha de creación
-            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 30)) // expira en 10 minutos
-            .issuer("mi-app")                         // quién emitió el token
-            .claim("role", "USER")                    // puedes agregar claims personalizados
+            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * tiempoRol)) // expira dependiento el tipo de usuario
+            .issuer("reportsapp")                         // quién emitió el token
             .signWith(key)                            // firmar con clave secreta
             .compact();
     }

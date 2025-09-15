@@ -14,12 +14,12 @@ import com.livingnet.back.Model.UsuarioModel;
 
 // clase de servicio de usuarios, maneja las solicitudes HTTP
 @RestController
-@RequestMapping("/usuarios")
-public class UsuarioService {
+@RequestMapping("")
+public class LoginService {
 
     private final UsuarioGestion usuarioGestion;
 
-    public UsuarioService(UsuarioGestion usuarioGestion) {
+    public LoginService(UsuarioGestion usuarioGestion) {
         this.usuarioGestion = usuarioGestion;
     }
 
@@ -27,15 +27,13 @@ public class UsuarioService {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
         try {
-            System.out.println("Intento de login para: " + usuario.getName() + " con password: " + usuario.getPassword());
-            UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getName(), usuario.getPassword());
-            
+            UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getmail(), usuario.getPassword());    
             if (usuarioEncontrado != null) {
-                String token = JwtUtil.generateToken(usuarioEncontrado.getName());
+                String token = JwtUtil.generateToken(usuarioEncontrado);
                 
                 Map<String, String> response = new HashMap<>();
                 response.put("token", token);
-                response.put("usuario", usuarioEncontrado.getName());
+                response.put("usuario", usuarioEncontrado.getmail());
                 
                 return ResponseEntity.ok(response);
             } else {

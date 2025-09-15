@@ -5,6 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+
+import java.util.List;
 import java.util.Optional;
 
 //clase de acceso a datos de usuarios, maneja la persistencia
@@ -20,12 +23,12 @@ public class UsuarioDAO {
         return Optional.ofNullable(u);
     }
 
-    public UsuarioModel buscarPorEmailYPassword(String name, String password) {
+    public UsuarioModel buscarPorEmailYPassword(String mail, String password) {
         try {
-            System.out.println("Buscando usuario con name: " + name + " y password: " + password);
+            System.out.println("Buscando usuario con mail: " + mail + " y password: " + password);
             
-            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.name = :name AND u.password = :password", UsuarioModel.class)
-                    .setParameter("name", name)
+            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail AND u.password = :password", UsuarioModel.class)
+                    .setParameter("mail", mail)
                     .setParameter("password", password)
                     .getSingleResult();
         } catch (Exception e) {
@@ -33,8 +36,27 @@ public class UsuarioDAO {
         }
     }
 
-    public void findAll() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAll'");
+    public List<UsuarioModel> getUsuarios() {
+        return em.createQuery("SELECT u FROM UsuarioModel u", UsuarioModel.class)
+                 .getResultList();
+    }
+
+    @Transactional
+    public UsuarioModel save(UsuarioModel usuario) {
+        System.out.println(usuario.getRol()+" "+usuario.getmail()+" "+usuario.getPassword()+" "+ usuario.getId());
+        em.persist(usuario);
+        return usuario;
+    }
+
+    @Transactional
+    public UsuarioModel updateUsuario(UsuarioModel usuario) {
+        return em.merge(usuario);
+    }
+
+    @Transactional
+    public boolean deleteUsuario(Long id) {
+         return em.createQuery("DELETE FROM UsuarioModel u WHERE u.id = :id")
+                .setParameter("id", id)
+                .executeUpdate() > 0;
     }
 }

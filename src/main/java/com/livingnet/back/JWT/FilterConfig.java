@@ -16,6 +16,7 @@ public class FilterConfig {
         registrationBean.addUrlPatterns("/reports/*");
         registrationBean.addUrlPatterns("/validate/*");
         registrationBean.addUrlPatterns("/image/*");
+        registrationBean.addUrlPatterns("/users/*");
         return registrationBean;
     }
 }

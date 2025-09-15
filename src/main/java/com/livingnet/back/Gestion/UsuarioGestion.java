@@ -1,5 +1,6 @@
 package com.livingnet.back.Gestion;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -28,5 +29,21 @@ public class UsuarioGestion {
     public UsuarioModel buscarPorEmailYPassword(String email, String password) {
         return usuarioDAO.buscarPorEmailYPassword(email, password);
         
+    }
+
+    public List<UsuarioModel> getUsuarios() {
+        return usuarioDAO.getUsuarios();
+    }
+
+    public UsuarioModel addUsuario(UsuarioModel usuario) {
+        return usuarioDAO.save(usuario);
+    }
+
+    public UsuarioModel updateUsuario(UsuarioModel usuario) {
+        return usuarioDAO.updateUsuario(usuario);
+    }
+
+    public boolean deleteUsuario(Long id) {
+        return usuarioDAO.deleteUsuario(id);
     }
 }

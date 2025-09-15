@@ -1,5 +1,6 @@
 package com.livingnet.back.Model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,8 +17,23 @@ public class UsuarioModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Column(unique = true, nullable = false)
+    private String mail;
+
+    @Column(unique = true, nullable = false)
     private String password;
+    
+    @Column(unique = true, nullable = false)
+    private String rol;
+//      TECNICO SECRETARIA ADMINISTRADOR
+
+    public String getRol() {
+        return rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
 
     public UsuarioModel() {}
 
@@ -27,11 +43,11 @@ public class UsuarioModel {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getName() {
-        return name;
+    public String getmail() {
+        return mail;
     }
-    public void setName(String name) {
-        this.name = name;
+    public void setmail(String mail) {
+        this.mail = mail;
     }
     public String getPassword() {
         return password;
