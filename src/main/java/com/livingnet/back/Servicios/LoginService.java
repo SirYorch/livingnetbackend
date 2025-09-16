@@ -27,18 +27,19 @@ public class LoginService {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
         try {
+            if(usuario.getMail() ==null  && usuario.getPassword() == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                    .body(Collections.singletonMap("error", "Empty Credentials"));    
+            }
             UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getMail(), usuario.getPassword());    
             if (usuarioEncontrado != null) {
                 String token = JwtUtil.generateToken(usuarioEncontrado);
                 
                 Map<String, String> response = new HashMap<>();
                 response.put("token", token);
-                response.put("usuario", usuarioEncontrado.getMail());
-                
                 return ResponseEntity.ok(response);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                                        .body(Collections.singletonMap("error", "Credenciales incorrectas"));
+                throw new Exception("Error de validacion");
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -46,12 +47,13 @@ public class LoginService {
         }
     }
 
+//metodo de testeo tanto de credenciales como de solicitudes http
 
-   @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
-        System.out.println("Entró al endpoint protegido");
-        return ResponseEntity.ok("Hola mundo, tu token es válido");
-    }
+//    @GetMapping("/hello")
+//     public ResponseEntity<String> hello() {
+//         System.out.println("Entró al endpoint protegido");
+//         return ResponseEntity.ok("Hola mundo, tu token es válido");
+//     }
 
 
 }

@@ -1,6 +1,9 @@
 package com.livingnet.back.Gestion;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.livingnet.back.DAO.ReportesDAO;
@@ -25,8 +28,12 @@ public class ReportesGestion {
         return reportesDAO.addReporte(reporte);
     }
 
-    public boolean deleteReporte(Long id) {
-        return reportesDAO.deleteReporte(id);
+    public Map<String,Boolean> deleteReporte(Long id) {
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("reporte", reportesDAO.deleteImagen(id));
+        response.put("imagen", reportesDAO.deleteReporte(id));
+        
+        return response;
     }
 
     public ReporteModel updateReporte(ReporteModel reporte) {

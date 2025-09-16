@@ -31,7 +31,7 @@ public class UsuariosService {
             UsuarioModel u = usuarios.get(i);
             UsuarioSend s = new UsuarioSend();
             s.setId(u.getId());
-            s.setRol(u.getRol());  // asegúrate que el método sea setRol()
+            s.setRol(u.getRol());
             s.setMail(u.getMail());
             usuariosEnviar.add(s);
         }
@@ -41,12 +41,11 @@ public class UsuariosService {
     // agregar un nuevo Usuario
     @PostMapping
     public UsuarioModel addUsuario(@RequestBody UsuarioRequest usuario) {
-        System.out.println(usuario.getMail()+" "+usuario.getConfirmPassword()+" "+usuario.getPassword()+" "+usuario.getRol());
         try{
             if(usuario.getMail() == null || usuario.getPassword() == null || usuario.getRol() == null){
                 throw new IllegalArgumentException("El nombre, la contraseña y el rol son obligatorios");
             }
-            if (usuario.getPassword().equals(usuario.getConfirmPassword())){
+            if (usuario.getPassword().equals(usuario.getConfirmPassword()) && usuario.getId()== 0){
                 UsuarioModel usuarioModel =new UsuarioModel();
                 usuarioModel.setPassword(usuario.getPassword());
                 usuarioModel.setMail(usuario.getMail());
@@ -66,7 +65,7 @@ public class UsuariosService {
     @PutMapping
     public UsuarioModel updateUsuario(@RequestBody UsuarioRequest usuario ) {
         UsuarioModel usuarioModel =new UsuarioModel();
-        if(usuario.getPassword().equals(usuario.getConfirmPassword())){
+        if(usuario.getPassword().equals(usuario.getConfirmPassword()) && usuario.getId() != 0){
             usuarioModel.setId(usuario.getId());
             usuarioModel.setPassword(usuario.getPassword());
             usuarioModel.setMail(usuario.getMail());

@@ -31,7 +31,6 @@ public class ReportesDAO {
 
     @Transactional
     public ReporteModel addReporte(ReporteModel reporte) {
-        System.out.println("Se llega aquí");
         em.persist(reporte);
         return reporte;
     }
@@ -39,13 +38,6 @@ public class ReportesDAO {
     @Transactional
     public boolean deleteReporte(Long id) {
         System.out.println("Se llega aquí");
-        ReporteModel reporte = em.find(ReporteModel.class, id);
-        if (reporte != null && reporte.getFoto_url() != null && !reporte.getFoto_url().isEmpty()) {
-            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + reporte.getFoto_url());
-            if (file.exists()) {
-                file.delete();
-            }
-        }
         return em.createQuery("DELETE FROM ReporteModel r WHERE r.id = :id")
                 .setParameter("id", id)
                 .executeUpdate() > 0;
@@ -137,6 +129,18 @@ public class ReportesDAO {
         query.setMaxResults(datos);   // cuántos registros devuelve
 
         return query.getResultList();
+    }
+
+    public Boolean deleteImagen(Long id) {
+        ReporteModel reporte = em.find(ReporteModel.class, id);
+        if (reporte != null && reporte.getFoto_url() != null && !reporte.getFoto_url().isEmpty()) {
+            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + reporte.getFoto_url());
+            if (file.exists()) {
+                file.delete();
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -32,8 +32,7 @@ public class ReporteModel {
     private String cuadrilla;
     @Column(nullable = false)
     private String jefe_cuadrilla;  
-    @Column(nullable = true)
-    private String ayudante_tecnico;
+    
     @Column(nullable = false)
     private String tipo_actividad;
     @Column(nullable = false)
@@ -44,16 +43,19 @@ public class ReporteModel {
     private String estado_actividad;
     @Column(nullable = false)
     private String clima;
+    @Column(nullable = false)
+    private String foto_url;
+    @Column(nullable = true)
+    private String ayudante_tecnico;
     @Column(nullable = true)
     private String motivo_retraso;
     @Column(nullable = true)
     private String observaciones;
-    @Column(nullable = false)
-    private String foto_url;
+    
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double kilometraje_inicio;
-    @Column(nullable = true)
+    @Column(nullable = false)
     private double kilometraje_fin;
     
     @Column(nullable = false)
