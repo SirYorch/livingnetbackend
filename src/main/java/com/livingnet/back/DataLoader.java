@@ -1,3 +1,5 @@
+//Clase creada para el ingreso masivo de datos para pruebas de filtraje.
+
 // package com.livingnet.back;
 
 // import java.util.Date;

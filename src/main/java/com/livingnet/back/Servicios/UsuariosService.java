@@ -42,10 +42,10 @@ public class UsuariosService {
     @PostMapping
     public UsuarioModel addUsuario(@RequestBody UsuarioRequest usuario) {
         try{
-            if(usuario.getMail() == null || usuario.getPassword() == null || usuario.getRol() == null){
+            if(usuario.getMail() == null || usuario.getPassword() == null || usuario.getRol() == null ||usuario.getConfirmPassword() == null || usuario.getId() != null){
                 throw new IllegalArgumentException("El nombre, la contraseña y el rol son obligatorios");
             }
-            if (usuario.getPassword().equals(usuario.getConfirmPassword()) && usuario.getId()== 0){
+            if (usuario.getPassword().equals(usuario.getConfirmPassword())){
                 UsuarioModel usuarioModel =new UsuarioModel();
                 usuarioModel.setPassword(usuario.getPassword());
                 usuarioModel.setMail(usuario.getMail());

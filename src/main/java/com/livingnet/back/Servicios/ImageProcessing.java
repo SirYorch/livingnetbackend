@@ -1,12 +1,14 @@
-package com.livingnet.back.Procesamiento;
+package com.livingnet.back.Servicios;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.livingnet.back.Gestion.ReportesGestion;
 import com.livingnet.back.Model.ReporteModel;
 
 import java.io.File;
@@ -16,12 +18,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/image")
 public class ImageProcessing {
 
     public static final String UPLOAD_DIR = "uploads/";
+
+    private final ReportesGestion reportesGestion;
+
+    public ImageProcessing(ReportesGestion reportesGestion) {
+        this.reportesGestion = reportesGestion;
+    }
 
     // POST /image/upload
     @PostMapping("/upload")
@@ -53,6 +63,8 @@ public class ImageProcessing {
             ReporteModel reporte = new ReporteModel();
             reporte.setFoto_url(filePath);
             reporte  = runPythonScript(filePath, reporte);
+
+            scheduleImageValidation(filePath);
                 
             return reporte;
 
@@ -93,6 +105,24 @@ public class ImageProcessing {
         }
     }
     
+    
+    @Async
+    public void scheduleImageValidation(String filePath) {
+        CompletableFuture.delayedExecutor(15, TimeUnit.MINUTES).execute(() -> {
+            try {
+                // Verifica si hay algún reporte con esa URL
+                boolean exists = reportesGestion.checkImageExist(filePath);
+                if (!exists) {
+                    File file = new File(UPLOAD_DIR + filePath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     // Método para ejecutar el script de Python
     private ReporteModel runPythonScript(String imagePath, ReporteModel reporte) {

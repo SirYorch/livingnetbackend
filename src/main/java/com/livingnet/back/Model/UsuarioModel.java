@@ -12,6 +12,12 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "usuarios")
 public class UsuarioModel {
+
+    
+    public static String ROL_ADMIN = "ADMINISTRADOR";
+    public static String ROL_TECNICO = "TECNICO";
+    public static String ROL_SECRETARIO = "SECRETARIA";
+
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

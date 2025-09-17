@@ -47,13 +47,4 @@ public class LoginService {
         }
     }
 
-//metodo de testeo tanto de credenciales como de solicitudes http
-
-//    @GetMapping("/hello")
-//     public ResponseEntity<String> hello() {
-//         System.out.println("Entró al endpoint protegido");
-//         return ResponseEntity.ok("Hola mundo, tu token es válido");
-//     }
-
-
 }

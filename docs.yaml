@@ -1,0 +1,517 @@
+# Para leer documentación correctamente verlo en editor.swagger.io
+
+openapi: 3.0.0
+info:
+  title: LivingNet APi
+  description:  Aplicación desarrollada en java springboot para el manejo de reportes en la empresa livingnet, la aplicación cuenta con funciones, CRUD para reportes, usuarios, y con funciones específicas para la muestra y gestión de los datos desde los editores de crear y filtrar.
+  
+  version: 1.0.0
+
+servers:
+  - url: por definir
+    description: Servidor local
+
+
+tags:
+  - name: Sin autorización
+    description: Métodos que no requieren autorización para funcionar
+    
+  - name: Usuarios
+    description: CRUD usuarios
+    
+  - name: Reportes
+    description: CRUD reportes
+    
+  - name: Gestión
+    description: Menejo en conjunto con la interfaz
+  
+  - name: validación
+    description: método basico de validación 
+      
+  
+
+paths:
+  /login:
+    post:
+      summary: Iniciar sesión
+      tags:
+        - Sin autorización
+      description: Metodo que permite recibir información de loggueo para la validación de usuarios.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '405':
+          description: Error de loggueo
+        default:
+          description: Credenciales incorrectas
+          
+
+  /reports/all:
+    get:
+      summary: Listar reportes
+      description: Obtención de todos los elementos reportes dentro de la base de datos, no se usa en el frontend, pero sirve para pruebas
+      tags:
+       - Reportes
+      responses:
+        '200':
+          description: Lista
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reports'
+  /reports/filters:
+    post:
+      summary: Listar reportes filtrado
+      description: Obtención de todos los elementos reportes dentro de la base de datos, utilizando filtros para busquedas especificas, se usa tambien para la busqueda diferida, no enviar mucha información y procesar mucha
+      tags:
+       - Gestión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReporteRequest'
+      responses:
+        '200':
+          description: Lista
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reports'
+                  
+  /reports/quantity:
+    post:
+      summary: obtener cantidad Reportes
+      description: Obtención de todos los elementos reportes dentro de la base de datos, utilizando filtros para busquedas especificas, se usa tambien para la busqueda diferida, no enviar mucha información y procesar mucha
+      tags:
+       - Gestión
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReporteRequest'
+      responses:
+        '200':
+          description: Lista
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/reports'                  
+                  
+  /reports:
+    post:
+      summary: crear nuevo reporte
+      description: Solicitud de creación de reportes
+      tags:
+       - Reportes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reports'
+      responses:
+        '200':
+          description: Reporte
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/reports'       
+    put:
+      summary: Editar reporte
+      description: Solicitud de edición de reportes
+      tags:
+       - Reportes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/reports'
+      responses:
+        '200':
+          description: Reporte
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/reports'
+  /reports/{id}:
+    delete:
+      summary: Eliminar reporte
+      description: Elimina un reporte existente según su ID.
+      tags:
+        - Reportes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID del reporte a eliminar
+          schema:
+            type: integer
+            format: int64
+            example: 123
+      responses:
+        '200':
+          description: Reporte eliminado correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: boolean
+                    example: true
+        '404':
+          description: Reporte no encontrado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted:
+                    type: boolean
+                    example: false
+       
+  /reports/deployables:
+    get:
+      summary: Obtencion de desplegables para filtros
+      description: Método usado para poder autorellenar los campos de rellenado en crear reportes, utilizando datos previos deutilizados anteriormente en la base de datos.
+      
+      tags:
+       - Gestión
+      responses:
+        '200':
+          description: Reporte
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StringListMap'
+  /validate:
+    get:
+      summary: validador de filtro JWT
+      description: Método usado para poder realizar solicitudes cortas en el ingreso de cada ventana para verificar si el token JWT es válido
+      
+      tags:
+       - validación
+      responses:
+        '200':
+          description: Reporte
+          content:
+            application/json:
+              schema:
+                type: string
+                   
+  /usuarios:
+    get:
+      summary: Obtener todos los usuarios
+      tags:
+        - Usuarios
+      responses:
+        '200':
+          description: Lista de usuarios obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsuarioSend'
+
+    post:
+      summary: Agregar un nuevo usuario
+      tags:
+        - Usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequest'
+      responses:
+        '200':
+          description: Usuario agregado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioModel'
+        '400':
+          description: Error en la validación de los datos
+
+    put:
+      summary: Actualizar un usuario
+      tags:
+        - Usuarios
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioRequestId'
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsuarioModel'
+        '400':
+          description: Error en la confirmación de contraseña o ID inválido
+
+  /usuarios/{id}:
+    delete:
+      summary: Eliminar un usuario por su ID
+      tags:
+        - Usuarios
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Eliminación exitosa (true/false)
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: Usuario no encontrado
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+        password:
+          type: string
+      required:
+        - mail
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          
+          
+    reports:
+      type: object
+      properties:
+        fecha:
+          type: number
+        horainicio:
+          type: number
+        horafin:
+          type: number
+        agencia:
+          type: string
+        actividad:
+          type: string
+        cuadrilla:
+          type: string
+        jefe_cuadrilla:
+          type: string
+        tipo_actividad:
+          type: string
+        formato_actividad:
+          type: string
+        complejidad_actividad:
+          type: string
+        clima:
+          type: string
+        foto_url:
+          type: string
+        ayudante_tecnico:
+          type: string
+        motivo_retraso:
+          type: string
+        observaciones:
+          type: string
+        kilometraje_inicio:
+          type: number
+        kilometraje_fin:
+          type: number
+        router:
+          type: number
+        one:
+          type: number
+        drop:
+          type: number
+        tensores:
+          type: number
+        conectores:
+          type: number
+        camara:
+          type: number
+          
+          
+    ReporteRequest:
+      type: object
+      properties:
+        datos:
+          type: integer
+          example: 20
+        pagina:
+          type: integer
+          example: 1
+        fecha:
+          type: string
+          format: date-time
+          example: "2025-09-16T12:30:00Z"
+        agencia:
+          type: string
+          example: "Agencia Norte"
+        cuadrilla:
+          type: string
+          example: "Cuadrilla 5"
+        jefe_cuadrilla:
+          type: string
+          example: "Juan Pérez"
+        ayudante_tecnico:
+          type: string
+          example: "Carlos Gómez"
+        tipo_actividad:
+          type: string
+          example: "Mantenimiento"
+        formato_actividad:
+          type: string
+          example: "Presencial"
+        complejidad_actividad:
+          type: string
+          example: "Alta"
+        estado_actividad:
+          type: string
+          example: "En proceso"
+        retraso:
+          type: string
+          description: "Indica si hubo retraso (ej. 'true', 'false' o 'null')"
+          example: "false"
+      required:
+        - datos
+        - pagina
+        
+    UsuarioModel:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        mail:
+          type: string
+          format: email
+          example: "usuario@ejemplo.com"
+        password:
+          type: string
+          format: password
+          example: "123456"
+        rol:
+          type: string
+          example: "ADMIN"
+      required:
+        - mail
+        - password
+        - rol
+        
+    UsuarioRequest:
+      type: object
+      properties:
+        mail:
+          type: string
+          format: email
+          example: "usuario@ejemplo.com"
+        password:
+          type: string
+          format: password
+          example: "123456"
+        confirmPassword:
+          type: string
+          format: password
+          example: "123456"
+        rol:
+          type: string
+          example: "USER"
+      required:
+        - mail
+        - password
+        - confirmPassword
+        - rol
+        
+    UsuarioRequestId:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        mail:
+          type: string
+          format: email
+          example: "usuario@ejemplo.com"
+        password:
+          type: string
+          format: password
+          example: "123456"
+        confirmPassword:
+          type: string
+          format: password
+          example: "123456"
+        rol:
+          type: string
+          example: "USER"
+      required:
+        - mail
+        - password
+        - confirmPassword
+        - rol
+
+    UsuarioSend:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        mail:
+          type: string
+          format: email
+        rol:
+          type: string
+          
+          
+    StringListMap:
+      type: object
+      additionalProperties:
+        type: array
+        items:
+          type: string
+      example:
+        agencia: ["Agencia Norte", "Agencia Sur"]
+        tipo_actividad: ["Mantenimiento", "Instalación"]

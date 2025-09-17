@@ -1,5 +1,6 @@
 package com.livingnet.back.Servicios;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,8 @@ import com.livingnet.back.Gestion.ReportesGestion;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 
@@ -36,41 +39,38 @@ public class ReportesService {
         return reportesGestion.getReportesFiltros(body);
     }
 
-    @GetMapping("/quantity")
-    public Long getCantidadReportes() {
-        return reportesGestion.getCantidadReportes();
+    @PostMapping("/quantity")
+    public Long getCantidadReportes(@RequestBody ReporteRequest body) {
+        return reportesGestion.getCantidadReportes(body);
     }
 
     // agregar un nuevo reporte
     @PostMapping
     public ReporteModel addReporte(@RequestBody ReporteModel reporte) {
         if(
-            reporte.getActividad() ==null && 
-            reporte.getAgencia() ==null && 
-            // reporte.getAyudante_tecnico() ==null && 
-            reporte.getClima() ==null &&
-            reporte.getComplejidad_actividad()==null && 
-            reporte.getCuadrilla() ==null && 
-            reporte.getEstado_actividad() ==null && 
-            reporte.getFecha() ==null && 
-            reporte.getFormato_actividad() ==null && 
-            reporte.getFoto_url() ==null && 
-            reporte.getHorafin() ==null &&
-            reporte.getHorainicio() ==null &&
-            reporte.getJefe_cuadrilla() ==null &&
-            // reporte.getMotivo_retraso() ==null &&
-            // reporte.getObservaciones() ==null &&
-            reporte.getTipo_actividad() ==null&&
-            reporte.getCamara() < 0 && 
-            reporte.getConectores()  < 0 && 
-            reporte.getDrop()  < 0 &&
-            reporte.getKilometraje_fin() < 0 &&
-            reporte.getKilometraje_inicio()  < 0 &&
-            reporte.getOnu() < 0 &&
-            reporte.getRoseta()  < 0 &&
-            reporte.getRouter()  < 0 &&
-            reporte.getTensores()  < 0 &&
-            reporte.getId() != 0
+            reporte.getActividad() !=null && 
+            reporte.getAgencia() !=null && 
+            reporte.getClima() !=null &&
+            reporte.getComplejidad_actividad()!=null && 
+            reporte.getCuadrilla() !=null && 
+            reporte.getEstado_actividad() !=null && 
+            reporte.getFecha() !=null && 
+            reporte.getFormato_actividad() !=null && 
+            reporte.getFoto_url() !=null && 
+            reporte.getHorafin() !=null &&
+            reporte.getHorainicio() !=null &&
+            reporte.getJefe_cuadrilla() !=null &&
+            reporte.getTipo_actividad() !=null&&
+            reporte.getCamara() > 0 && 
+            reporte.getConectores()  > 0 && 
+            reporte.getDrop()  > 0 &&
+            reporte.getKilometraje_fin() > 0 &&
+            reporte.getKilometraje_inicio()  > 0 &&
+            reporte.getOnu() > 0 &&
+            reporte.getRoseta()  > 0 &&
+            reporte.getRouter()  > 0 &&
+            reporte.getTensores()  > 0 &&
+            reporte.getId() == 0
             ){
                 try{
                     return  reportesGestion.addReporte(reporte);
@@ -87,32 +87,29 @@ public class ReportesService {
     @PutMapping
     public ReporteModel updateReporte(@RequestBody ReporteModel reporte) {
         if(
-            reporte.getActividad() ==null && 
-            reporte.getAgencia() ==null && 
-            // reporte.getAyudante_tecnico() ==null && 
-            reporte.getClima() ==null &&
-            reporte.getComplejidad_actividad()==null && 
-            reporte.getCuadrilla() ==null && 
-            reporte.getEstado_actividad() ==null && 
-            reporte.getFecha() ==null && 
-            reporte.getFormato_actividad() ==null && 
-            reporte.getFoto_url() ==null && 
-            reporte.getHorafin() ==null &&
-            reporte.getHorainicio() ==null &&
-            reporte.getJefe_cuadrilla() ==null &&
-            // reporte.getMotivo_retraso() ==null &&
-            // reporte.getObservaciones() ==null &&
-            reporte.getTipo_actividad() ==null&&
-            reporte.getCamara() < 0 && 
-            reporte.getConectores()  < 0 && 
-            reporte.getDrop()  < 0 &&
-            reporte.getKilometraje_fin() < 0 &&
-            reporte.getKilometraje_inicio()  < 0 &&
-            reporte.getOnu() < 0 &&
-            reporte.getRoseta()  < 0 &&
-            reporte.getRouter()  < 0 &&
-            reporte.getTensores()  < 0 &&
-            reporte.getId() == 0
+           reporte.getActividad() !=null && 
+            reporte.getAgencia() !=null && 
+            reporte.getClima() !=null &&
+            reporte.getComplejidad_actividad()!=null && 
+            reporte.getCuadrilla() !=null && 
+            reporte.getEstado_actividad() !=null && 
+            reporte.getFecha() !=null && 
+            reporte.getFormato_actividad() !=null && 
+            reporte.getFoto_url() !=null && 
+            reporte.getHorafin() !=null &&
+            reporte.getHorainicio() !=null &&
+            reporte.getJefe_cuadrilla() !=null &&
+            reporte.getTipo_actividad() !=null&&
+            reporte.getCamara() > 0 && 
+            reporte.getConectores()  > 0 && 
+            reporte.getDrop()  > 0 &&
+            reporte.getKilometraje_fin() > 0 &&
+            reporte.getKilometraje_inicio()  > 0 &&
+            reporte.getOnu() > 0 &&
+            reporte.getRoseta()  > 0 &&
+            reporte.getRouter()  > 0 &&
+            reporte.getTensores()  > 0 &&
+            reporte.getId() != 0
             ){
             try{
                 ReporteModel dato  =  reportesGestion.updateReporte(reporte);
@@ -122,6 +119,32 @@ public class ReportesService {
                 return null;
             }
         }
+
+        System.out.println(
+            (reporte.getActividad() !=null )+" "+
+            (reporte.getAgencia() !=null )+" "+
+            (reporte.getClima() !=null )+" "+
+            (reporte.getComplejidad_actividad()!=null )+" "+
+            (reporte.getCuadrilla() !=null )+" "+
+            (reporte.getEstado_actividad() !=null )+" "+
+            (reporte.getFecha() !=null )+" "+
+            (reporte.getFormato_actividad() !=null )+" "+
+            (reporte.getFoto_url() !=null )+" "+
+            (reporte.getHorafin() !=null )+" "+
+            (reporte.getHorainicio() !=null )+" "+
+            (reporte.getJefe_cuadrilla() !=null )+" "+
+            (reporte.getTipo_actividad() !=null)+" "+
+            (reporte.getCamara() > 0 )+" "+
+            (reporte.getConectores()  > 0 )+" "+
+            (reporte.getDrop()  > 0 )+" "+
+            (reporte.getKilometraje_fin() > 0 )+" "+
+            (reporte.getKilometraje_inicio()  > 0 )+" "+
+            (reporte.getOnu() > 0 )+" "+
+            (reporte.getRoseta()  > 0 )+" "+
+            (reporte.getRouter()  > 0 )+" "+
+            (reporte.getTensores()  > 0 )+" "+
+            (reporte.getId() != 0)
+        );
         return null;
         
     }
@@ -132,4 +155,16 @@ public class ReportesService {
         Map<String, Boolean> response =  reportesGestion.deleteReporte(id);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/deployables")
+    public ResponseEntity<?> getDesplegables() {
+        Map<String,List<String>> dato = reportesGestion.getDesplegables();
+
+        if(dato.size()>0){
+            return ResponseEntity.ok(dato);
+        } else{
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("No se consiguieron los deplegables");
+        }
+    }
+    
 }

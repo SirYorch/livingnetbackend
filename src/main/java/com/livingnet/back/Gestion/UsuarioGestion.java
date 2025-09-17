@@ -46,4 +46,8 @@ public class UsuarioGestion {
     public boolean deleteUsuario(Long id) {
         return usuarioDAO.deleteUsuario(id);
     }
+
+    public UsuarioModel getUsuarioPorMail(String mail) {
+        return usuarioDAO.getUsuarioPorMail(mail);
+    }
 }

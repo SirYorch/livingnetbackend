@@ -25,11 +25,11 @@ public class JwtUtil {
         Map<String, Object> commonHeaders = Map.of("alg", "HS256", "typ", "JWT");
         int tiempoRol = 0;
         System.out.println("Generando token para usuario: " + user.getRol());
-        if( user.getRol().equals("ADMINISTRADOR")){
+        if( user.getRol().equals(UsuarioModel.ROL_ADMIN)){
             tiempoRol = 120; // 2 horas
-        } else if ( user.getRol().equals("TECNICO")){
+        } else if ( user.getRol().equals(UsuarioModel.ROL_TECNICO)){
             tiempoRol = 10; // 10 minutos
-        } else if ( user.getRol().equals("SECRETARIA")){
+        } else if ( user.getRol().equals(UsuarioModel.ROL_SECRETARIO)){
             tiempoRol = 60 * 4; //4 horas
         }
         return Jwts.builder()
@@ -56,7 +56,7 @@ public class JwtUtil {
                     .getPayload();       // obtiene los claims
 
         } catch (JwtException ex) {
-            System.out.println("❌ Token inválido: " + ex.getMessage());
+            System.out.println("Token inválido: " + ex.getMessage());
             return null;
         }
     }

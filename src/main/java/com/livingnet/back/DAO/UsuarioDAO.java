@@ -59,4 +59,22 @@ public class UsuarioDAO {
                 .setParameter("id", id)
                 .executeUpdate() > 0;
     }
+
+    public UsuarioModel getUsuarioPorMail(String mail) {
+        try {
+            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail", UsuarioModel.class)
+                    .setParameter("mail", mail)
+                    .getSingleResult();
+        } catch (jakarta.persistence.NoResultException nre) {
+            System.out.println("NoResultException -> no existe usuario con mail=" + mail);
+            return null;
+        } catch (jakarta.persistence.NonUniqueResultException nue) {
+            System.out.println("NonUniqueResultException -> hay >1 usuario con mail=" + mail);
+            nue.printStackTrace();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

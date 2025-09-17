@@ -44,7 +44,29 @@ public class ReportesGestion {
         return reportesDAO.getReportesFiltrado(rq);
     }
 
-    public Long getCantidadReportes() {
-        return reportesDAO.getCantidadReportes();
+    public Long getCantidadReportes(ReporteRequest body) {
+        return reportesDAO.getCantidadReportes(body);
+    }
+
+    public Map<String, List<String>> getDesplegables() {
+        Map<String, List<String>> desplegables = new HashMap<>();
+        // desplegables.put("fecha", reportesDAO.getFechas());
+        desplegables.put("agencia", reportesDAO.getAgencias());
+        desplegables.put("tipo_actividad", reportesDAO.getTiposActividad());
+        desplegables.put("formato_actividad", reportesDAO.getFormatosActividad());
+        desplegables.put("complejidad", reportesDAO.getComplejidades());
+        desplegables.put("estado", reportesDAO.getEstados());
+        desplegables.put("jefe_cuadrilla", reportesDAO.getJefesCuadrilla());
+        desplegables.put("cuadrilla", reportesDAO.getCuadrillas());
+        desplegables.put("ayudante_tecnico", reportesDAO.getAyudantesTecnico());
+
+        return desplegables;
+        
+    }
+
+    public boolean checkImageExist(String filePath) {
+
+        
+        return reportesDAO.checkImageExist(filePath);
     }
 }
