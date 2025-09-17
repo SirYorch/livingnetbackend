@@ -3,13 +3,16 @@ package com.livingnet.back.Model;
 import java.util.Date;
 
 
-//Clase generada para 
+//Clase generada para los filtros en las solicitudes de reportes.
 public class ReporteRequest {
     
+    // Entero para filtrar la cantidad de datos que se envían en el getReportesFiltrado de la clase ReportesDAO
     private int datos;
     
+    // Entero para empezar en otro dígito, si se muestran 10 datos por pagina, y estamos en la segunda pagina, se muestran datos desde el 10 hasta el 19 contando el primero como 0.
     private int pagina;
 
+    //  filtros válidos en las solicitudes de filtro
     private Date fecha;
     
     private String agencia;
@@ -21,6 +24,8 @@ public class ReporteRequest {
     private String complejidad_actividad;
     private String estado_actividad;
     private String retraso;
+
+    //getters y setters para el funcionamiento de jakarta y las solicitudes sql en reportesDAO
 
     public int getDatos() {
         return this.datos;

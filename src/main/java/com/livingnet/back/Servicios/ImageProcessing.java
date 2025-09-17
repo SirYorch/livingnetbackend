@@ -21,10 +21,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
+//clase de servicio, sirve para solicitudes http referenciales a imagenes
 @RestController
 @RequestMapping("/image")
 public class ImageProcessing {
 
+
+    // variable estática de dónde se guardan las imagenes, usada para eliminar imagenes, crear imagenes, y obtener imagenes.
     public static final String UPLOAD_DIR = "uploads/";
 
     private final ReportesGestion reportesGestion;
@@ -33,7 +36,9 @@ public class ImageProcessing {
         this.reportesGestion = reportesGestion;
     }
 
-    // POST /image/upload
+
+
+    // permite subir imagenes, serán guardadas la variable estática según upload DIR
     @PostMapping("/upload")
     public ReporteModel uploadImage(@RequestParam("file") MultipartFile file) {
         try {
@@ -51,7 +56,7 @@ public class ImageProcessing {
             String formattedDateTime = now.format(formatter);
 
             // Construir la ruta del archivo
-            String filePath = "file-" + formattedDateTime + ".jpg";
+            String filePath = "file-" + formattedDateTime + ".jpg"; // las imagenes se construyen de la misma forma siempre, utilizamos file- la fecha, hora minutos y segundos a la que fue subida, y el archivo de extensión.
             
             File savedFile = new File(UPLOAD_DIR +filePath);
             try (FileOutputStream fos = new FileOutputStream(savedFile)) {
@@ -69,14 +74,14 @@ public class ImageProcessing {
             return reporte;
 
         } catch (IOException e) {
-            // Manejar el error devolviendo un ReporteModel vacío o con información de error
             ReporteModel errorReporte = new ReporteModel();
-            errorReporte.setFoto_url(null); // o algún valor que indique error
-            // Puedes agregar más información de error si tu modelo lo permite
+            errorReporte.setFoto_url(null);
             return errorReporte;
         }
     }
 
+
+    //método para poder visualizar las imagenes desde la vista del frontend.
     @GetMapping("/{file}")
     public ResponseEntity<byte[]> getImage(@PathVariable String file) {
         try {
@@ -106,6 +111,8 @@ public class ImageProcessing {
     }
     
     
+    // método de validación de creación de reporte, siguiendo el flujo de trabajo
+    // una imagen se sube y se es devuelta su url, si no se crea un reporte con esa url de imagen en 15 mintuos la imagen es eliminada, este método controla el tiempo y la función de eliminación.
     @Async
     public void scheduleImageValidation(String filePath) {
         CompletableFuture.delayedExecutor(15, TimeUnit.MINUTES).execute(() -> {
@@ -124,7 +131,7 @@ public class ImageProcessing {
         });
     }
 
-    // Método para ejecutar el script de Python
+    // Método para ejecutar el script de Python    //// aún no usado debido a los formatos de reportes
     private ReporteModel runPythonScript(String imagePath, ReporteModel reporte) {
         try {
             // Ajusta la ruta del script

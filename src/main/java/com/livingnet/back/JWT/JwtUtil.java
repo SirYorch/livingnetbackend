@@ -12,41 +12,44 @@ import com.livingnet.back.Model.UsuarioModel;
 import java.util.Date;
 import java.util.Map;
 
-// clase para generacion y validación de tokens JWT
-
+// clase para generacion y parseo de tokens JWT
 public class JwtUtil {
     public JwtUtil() {
 
     }
     
+    //clave jwt habrá de ser cambiada para las validaciones
     private static final SecretKey key = Keys.hmacShaKeyFor("JHASGDjvbadbvaisdhg29138-)(*&^VAGV2)".getBytes());
 
+
+    //clase para generación del token
     public static String generateToken(UsuarioModel user) {
-        Map<String, Object> commonHeaders = Map.of("alg", "HS256", "typ", "JWT");
+        Map<String, Object> commonHeaders = Map.of("alg", "HS256", "typ", "JWT"); // encriptación
         int tiempoRol = 0;
-        System.out.println("Generando token para usuario: " + user.getRol());
+        
         if( user.getRol().equals(UsuarioModel.ROL_ADMIN)){
             tiempoRol = 120; // 2 horas
         } else if ( user.getRol().equals(UsuarioModel.ROL_TECNICO)){
-            tiempoRol = 10; // 10 minutos
+            tiempoRol = 15; // 15 minutos
         } else if ( user.getRol().equals(UsuarioModel.ROL_SECRETARIO)){
             tiempoRol = 60 * 4; //4 horas
-        }
+        } // se utilizan los roles para la asignación de tiempos de sesión.
+
+
         return Jwts.builder()
 
-            // 🔹 Headers
             .header()
-                .add(commonHeaders)                   // headers comunes
+                .add(commonHeaders)
                 .and()
-            // 🔹 Claims
-            .subject(user.getMail())                        // usuario (subject)
+            .subject(user.getMail())                        // usuario (subject) 
             .issuedAt(new Date())                     // fecha de creación
-            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * tiempoRol)) // expira dependiento el tipo de usuario
-            .issuer("reportsapp")                         // quién emitió el token
+            .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * tiempoRol)) //tiempo en minutos, se multiplica por cada usuario expira dependiento el tipo de usuario
+            .issuer("reportsapp")                         
             .signWith(key)                            // firmar con clave secreta
             .compact();
     }
 
+    //clase para validacion del usuarios utilizando el token jwt que se envía en el header de la solicitud http
     public static Claims parseToken(String jwt) {
         try {
             return Jwts.parser()
@@ -61,10 +64,11 @@ public class JwtUtil {
         }
     }
 
+    // micrométodo para sacar el usuario de token parseado
     public String extractUsername(String token) {
         Claims claims = parseToken(token);
         if (claims != null) {
-            return claims.getSubject(); // "sub" en el JWT
+            return claims.getSubject();
         }
         return null;
     }

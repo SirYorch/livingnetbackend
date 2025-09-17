@@ -1,31 +1,61 @@
 package com.livingnet.back.Model;
 
 // DTO para registrar un usuario con confirmación de contraseña
-public class UsuarioRequest {
+//clase creada para realizar una doble validación en cambios de contraseñas, y creación de usuarios.
+
+
+public class UsuarioRequest {    
+
+
     private Long id;
+    private String mail;
+    private String password;
+    private String rol;
+    private String confirmPassword; // este es el campo que agregamos para realizar la validación.
+
+
+    // getters y setters.
+
+   
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-    private String mail;
-    private String password;
-    private String rol;
-    private String confirmPassword;
 
-    // Getters y setters
-    public String getMail() { return mail; }
-    public void setMail(String mail) { this.mail = mail; }
+    public String getMail() {
+        return this.mail;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public void setMail(String mail) {
+        this.mail = mail;
+    }
 
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
+    public String getPassword() {
+        return this.password;
+    }
 
-    public String getConfirmPassword() { return confirmPassword; }
-    public void setConfirmPassword(String confirmPassword) { this.confirmPassword = confirmPassword; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRol() {
+        return this.rol;
+    }
+
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
+
+    public String getConfirmPassword() {
+        return this.confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+   
 }

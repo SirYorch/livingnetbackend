@@ -10,6 +10,7 @@ import com.livingnet.back.Model.UsuarioModel;
 
 
 // clase de gestion de usuarios, maneja la logica de negocio
+// la clase cuenta solo con un crud, y métodos e transición no se comentan métodos con lógica
 @Service
 public class UsuarioGestion {
 
@@ -21,9 +22,7 @@ public class UsuarioGestion {
     }
 
     public Optional<UsuarioModel> buscarPorId(Long id) {
-        Optional<UsuarioModel> usuario = usuarioDAO.buscarPorId(id);
-        System.out.println("Usuario encontrado: " + usuario.orElse(null));
-        return usuario;
+        return usuarioDAO.buscarPorId(id);
     }
 
     public UsuarioModel buscarPorEmailYPassword(String email, String password) {

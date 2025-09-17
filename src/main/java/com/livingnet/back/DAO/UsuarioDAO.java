@@ -14,19 +14,19 @@ import java.util.Optional;
 @Repository
 public class UsuarioDAO {
 
-    @PersistenceContext
+    @PersistenceContext // entidad para realizar transacciones jpa
     private EntityManager em;
 
+
+    //metodo para buscar usuarios por el id, 
     public Optional<UsuarioModel> buscarPorId(Long id) {
         UsuarioModel u = em.find(UsuarioModel.class, id);
-        System.out.println("Usuario desde EntityManager: " + u);
         return Optional.ofNullable(u);
     }
 
+    //metodos para buscar usuarios por email y password, sirve para las validación de credenciales en el inicio de sesión
     public UsuarioModel buscarPorEmailYPassword(String mail, String password) {
         try {
-            System.out.println("Buscando usuario con mail: " + mail + " y password: " + password);
-            
             return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail AND u.password = :password", UsuarioModel.class)
                     .setParameter("mail", mail)
                     .setParameter("password", password)
@@ -36,11 +36,13 @@ public class UsuarioDAO {
         }
     }
 
+    //metodo listar usuarios, sirve para listar todos los usuarios y que se conozcan usuarios y permisos de cada uno.
     public List<UsuarioModel> getUsuarios() {
         return em.createQuery("SELECT u FROM UsuarioModel u", UsuarioModel.class)
                  .getResultList();
     }
 
+    // metodo para guardar usuarios, utilizando jpa.
     @Transactional
     public UsuarioModel save(UsuarioModel usuario) {
         System.out.println(usuario.getRol()+" "+usuario.getMail()+" "+usuario.getPassword()+" "+ usuario.getId());
@@ -48,11 +50,13 @@ public class UsuarioDAO {
         return usuario;
     }
 
+    // método para actualizar usuario, es utiliza la id de forma implicita.
     @Transactional
     public UsuarioModel updateUsuario(UsuarioModel usuario) {
         return em.merge(usuario);
     }
 
+    // método para eliminar usuarios, utilizando el id, no se permite que un usuario se elimine a si mismo, revisar jwtFilter
     @Transactional
     public boolean deleteUsuario(Long id) {
          return em.createQuery("DELETE FROM UsuarioModel u WHERE u.id = :id")
@@ -60,6 +64,7 @@ public class UsuarioDAO {
                 .executeUpdate() > 0;
     }
 
+    //metodo get usuario por MAIl sirve para obtener el usuario utilizando solo el mail, sirve para la validacion en jwtFilter
     public UsuarioModel getUsuarioPorMail(String mail) {
         try {
             return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail", UsuarioModel.class)

@@ -14,11 +14,14 @@ import org.springframework.stereotype.Component;
 import com.livingnet.back.Gestion.UsuarioGestion;
 import com.livingnet.back.Model.UsuarioModel;
 
+//clase de filtro, recibe todas las solicitudes http que estan configuradas según la clase FilterCOnfig
 @Component
 public class JwtFilter implements Filter {
 
-    private final JwtUtil jwtUtil = new JwtUtil();
-    private final UsuarioGestion usuarioGestion;
+    private final JwtUtil jwtUtil = new JwtUtil();  // util sirve para generar y parsear los tokens jwt
+    private final UsuarioGestion usuarioGestion; // sirve para eralizar las transacciones y validar usuarios y roles
+
+    // variables de texto, permiten tener los mismos mensajes de error, y enviar códigos distintos dependiendo el error.
     private final String sinPermiso = "Permisos Insuficientes";
     private final String invalida = "Acción invalida";
 
@@ -26,6 +29,8 @@ public class JwtFilter implements Filter {
         this.usuarioGestion = usuarioGestion;
     }
 
+
+    // método sobreescrito, contiene la lógica del token jwt en cada validación
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -58,12 +63,12 @@ public class JwtFilter implements Filter {
         }
     }
 
+
+    //método para validar permisos en las solicitudes http, por el momento, edición es solo permitida por administradores.
     private void ValidatePermissions(HttpServletRequest req, String username) throws Exception {
         StringBuilder sb = new StringBuilder(FilterConfig.direccionUsers);
         sb.deleteCharAt(7);
         sb.deleteCharAt(6);
-        System.out.println(req.getMethod().equals("GET"));
-        System.out.println(req.getMethod());
         if(req.getMethod().equals("GET")){
             return;
         } else {
@@ -73,9 +78,9 @@ public class JwtFilter implements Filter {
                     throw new Exception(this.sinPermiso);
                 }
 
-                if(req.getMethod().equals("DELETE")) {
-                    String path = req.getRequestURI();      // /users/123
-                    String userIdStr = path.substring(path.lastIndexOf("/") + 1); // "123"
+                if(req.getMethod().equals("DELETE")) {// un administrador no se puede eliminar a si mismo
+                    String path = req.getRequestURI();   
+                    String userIdStr = path.substring(path.lastIndexOf("/") + 1);
                     long userId = Long.parseLong(userIdStr);
 
                     if(user.getId() == userId){

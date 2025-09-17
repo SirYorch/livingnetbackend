@@ -24,6 +24,7 @@ public class LoginService {
     }
 
 
+    //solicitud POST de login, verifica las credenciales del usuario para poder entregar el token jwt
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UsuarioModel usuario) {
         try {

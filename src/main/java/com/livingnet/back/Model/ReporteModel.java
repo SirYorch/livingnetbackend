@@ -9,14 +9,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// clase de reportes, la tabla en db se llama reportes,
+// contiene persistencia.
+
 @Entity
 @Table(name = "reportes")
 public class ReporteModel {
     
+    // identificador, generado automático
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     
+
+    //variables de tipo fecha colocados en los reportes
     @Column(nullable = false)
     private Date fecha;
     @Column(nullable = false)
@@ -24,6 +30,7 @@ public class ReporteModel {
     @Column(nullable = false)
     private Date horafin;
 
+    //variables de String fecha colocados en los reportes
     @Column(nullable = false)
     private String agencia;
     @Column(nullable = false)
@@ -32,7 +39,6 @@ public class ReporteModel {
     private String cuadrilla;
     @Column(nullable = false)
     private String jefe_cuadrilla;  
-    
     @Column(nullable = false)
     private String tipo_actividad;
     @Column(nullable = false)
@@ -45,6 +51,8 @@ public class ReporteModel {
     private String clima;
     @Column(nullable = false)
     private String foto_url;
+
+    //variables de tipo String que pueden serr enviadas nulas, 
     @Column(nullable = true)
     private String ayudante_tecnico;
     @Column(nullable = true)
@@ -52,12 +60,13 @@ public class ReporteModel {
     @Column(nullable = true)
     private String observaciones;
     
-
+    // variables de tipo double
     @Column(nullable = false)
     private double kilometraje_inicio;
     @Column(nullable = false)
     private double kilometraje_fin;
     
+    // variables de tipo int
     @Column(nullable = false)
     private int router;
     @Column(nullable = false)
@@ -75,6 +84,8 @@ public class ReporteModel {
     
 
     public ReporteModel() {}
+
+    //// getters y setters, no es necesario seguir bajando
 
     public long getId() {
         return this.id;

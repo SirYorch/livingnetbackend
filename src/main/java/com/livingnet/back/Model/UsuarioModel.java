@@ -7,32 +7,39 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-//clase de modelo de usuario, aqui solo guardamos datos correo contraseña, y jwt
+//clase de modelo de usuario, aqui solo guardamos datos correo contraseña
 
+// sirve para la persistencia en base de datos, y funcionamiento de validaciones con rol y jwt.
 @Entity
 @Table(name = "usuarios")
 public class UsuarioModel {
 
-    
+
+    // roles válidos por el momento, permiten validaciones y tiempo de sesión, revisar tambien clase JWTFilter en caso de cambios.
     public static String ROL_ADMIN = "ADMINISTRADOR";
     public static String ROL_TECNICO = "TECNICO";
     public static String ROL_SECRETARIO = "SECRETARIA";
 
-    
+    // variable identificadora autogeneraad
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // variables tipo string para almacenar correo y contraseña.
     @Column(unique = true, nullable = false)
     private String mail;
 
     @Column(unique = false, nullable = false)
     private String password;
     
+    //por el momento se aceptan solo las espec[ificadas en variables estáticas
     @Column(unique = false, nullable = false)
     private String rol;
-//      TECNICO SECRETARIA ADMINISTRADOR
 
+
+
+
+    // getters y setters, no es necesario seguir bajando.
     public String getRol() {
         return rol;
     }

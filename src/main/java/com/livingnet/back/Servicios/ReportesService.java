@@ -28,17 +28,19 @@ public class ReportesService {
         this.reportesGestion = reportesGestion;
     }
 
-    // obtener todos los reportes 2
+    // obtener todos los reportes
     @GetMapping("/all")
     public List<ReporteModel> getReportes() {
         return reportesGestion.getReportes();
     }
     
+    // obtener todos los reportes utilizando los filtros, se recibe un body que no converja con la clase reporteRequest
     @PostMapping("/filters")
     public List<ReporteModel> getReportesFiltros(@RequestBody ReporteRequest body) {
         return reportesGestion.getReportesFiltros(body);
     }
 
+    // obtener cantidad de reportes existentes utilizando los filtros, se recibe un body que no converja con la clase reporteRequest
     @PostMapping("/quantity")
     public Long getCantidadReportes(@RequestBody ReporteRequest body) {
         return reportesGestion.getCantidadReportes(body);
@@ -75,7 +77,6 @@ public class ReportesService {
                 try{
                     return  reportesGestion.addReporte(reporte);
                 } catch (Exception e) {
-                    System.out.println("Error al agregar el reporte: " + e);
                     return null;
                 }
             }
@@ -113,38 +114,11 @@ public class ReportesService {
             ){
             try{
                 ReporteModel dato  =  reportesGestion.updateReporte(reporte);
-                System.out.println(dato);
                 return dato;
             } catch (Exception e){
                 return null;
             }
         }
-
-        System.out.println(
-            (reporte.getActividad() !=null )+" "+
-            (reporte.getAgencia() !=null )+" "+
-            (reporte.getClima() !=null )+" "+
-            (reporte.getComplejidad_actividad()!=null )+" "+
-            (reporte.getCuadrilla() !=null )+" "+
-            (reporte.getEstado_actividad() !=null )+" "+
-            (reporte.getFecha() !=null )+" "+
-            (reporte.getFormato_actividad() !=null )+" "+
-            (reporte.getFoto_url() !=null )+" "+
-            (reporte.getHorafin() !=null )+" "+
-            (reporte.getHorainicio() !=null )+" "+
-            (reporte.getJefe_cuadrilla() !=null )+" "+
-            (reporte.getTipo_actividad() !=null)+" "+
-            (reporte.getCamara() > 0 )+" "+
-            (reporte.getConectores()  > 0 )+" "+
-            (reporte.getDrop()  > 0 )+" "+
-            (reporte.getKilometraje_fin() > 0 )+" "+
-            (reporte.getKilometraje_inicio()  > 0 )+" "+
-            (reporte.getOnu() > 0 )+" "+
-            (reporte.getRoseta()  > 0 )+" "+
-            (reporte.getRouter()  > 0 )+" "+
-            (reporte.getTensores()  > 0 )+" "+
-            (reporte.getId() != 0)
-        );
         return null;
         
     }
@@ -156,6 +130,7 @@ public class ReportesService {
         return ResponseEntity.ok(response);
     }
 
+    // metodo para obtener los variables distintivos de los desplegables, sirve para facilitar filtros y rellenados automáticos
     @GetMapping("/deployables")
     public ResponseEntity<?> getDesplegables() {
         Map<String,List<String>> dato = reportesGestion.getDesplegables();

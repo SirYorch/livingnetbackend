@@ -11,7 +11,7 @@ import com.livingnet.back.Model.UsuarioRequest;
 import com.livingnet.back.Model.UsuarioSend;;
 
 
-// clase de servicio de usuarios, maneja las solicitudes HTTP
+// clase de servicio de usuarios, maneja las solicitudes HTTP 
 @RestController
 @RequestMapping("/users")
 public class UsuariosService {
@@ -56,12 +56,11 @@ public class UsuariosService {
                 throw new Exception("Error al confirmar contrasñas");
             }
         } catch (Exception e) {
-            System.out.println("Error al agregar el Usuario: " + e);
             return null;
         }
     }
 
-    // actualizar un reporte según su id
+    // actualizar un usuario implicitamente utiliza el id del usuario.
     @PutMapping
     public UsuarioModel updateUsuario(@RequestBody UsuarioRequest usuario ) {
         UsuarioModel usuarioModel =new UsuarioModel();
@@ -83,7 +82,6 @@ public class UsuariosService {
     @DeleteMapping("/{id}")
     public boolean deleteUsuario(@PathVariable Long id) {
         boolean dato  =  usuarioGestion.deleteUsuario(id);
-        System.out.println(dato);
         return dato;
     }
 
