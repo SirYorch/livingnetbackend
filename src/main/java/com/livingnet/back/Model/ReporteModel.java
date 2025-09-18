@@ -8,6 +8,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 // clase de reportes, la tabla en db se llama reportes,
 // contiene persistencia.
@@ -24,32 +27,56 @@ public class ReporteModel {
 
     //variables de tipo fecha colocados en los reportes
     @Column(nullable = false)
+    @NotNull(message = "La fecha es obligatoria")
     private Date fecha;
+
     @Column(nullable = false)
+    @NotNull(message = "La hora de inicio es obligatoria")
     private Date horainicio;
+
     @Column(nullable = false)
+    @NotNull(message = "La hora de fin es obligatoria")
     private Date horafin;
 
     //variables de String fecha colocados en los reportes
     @Column(nullable = false)
+    @NotBlank(message = "La agencia es obligatoria")
     private String agencia;
+
     @Column(nullable = false)
+    @NotBlank(message = "La actividad es obligatoria")
     private String actividad;
+
     @Column(nullable = false)
+    @NotBlank(message = "La cuadrilla es obligatoria")
     private String cuadrilla;
+
     @Column(nullable = false)
+    @NotBlank(message = "El jefe de cuadrilla es obligatorio")
     private String jefe_cuadrilla;  
+
     @Column(nullable = false)
+    @NotBlank(message = "El tipo de actividad es obligatorio")
     private String tipo_actividad;
+
     @Column(nullable = false)
+    @NotBlank(message = "El formato de actividad es obligatorio")
     private String formato_actividad;   
+
     @Column(nullable = false)
+    @NotBlank(message = "La complejidad de actividad es obligatoria")
     private String complejidad_actividad;
+
     @Column(nullable = false)
+    @NotBlank(message = "El estado de actividad es obligatorio")
     private String estado_actividad;
+
     @Column(nullable = false)
+    @NotBlank(message = "El clima es obligatorio")
     private String clima;
+
     @Column(nullable = false)
+    @NotBlank(message = "La URL de la foto es obligatoria")
     private String foto_url;
 
     //variables de tipo String que pueden serr enviadas nulas, 
@@ -62,24 +89,40 @@ public class ReporteModel {
     
     // variables de tipo double
     @Column(nullable = false)
+    @Min(value = 0, message = "El kilometraje de inicio debe ser mayor o igual a 0")
     private double kilometraje_inicio;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "El kilometraje de fin debe ser mayor o igual a 0")
     private double kilometraje_fin;
-    
+
     // variables de tipo int
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de routers debe ser mayor o igual a 0")
     private int router;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de ONU debe ser mayor o igual a 0")
     private int onu;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de drop debe ser mayor o igual a 0")
     private int drop;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de roseta debe ser mayor o igual a 0")
     private int roseta;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de tensores debe ser mayor o igual a 0")
     private int tensores;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de conectores debe ser mayor o igual a 0")
     private int conectores;
+
     @Column(nullable = false)
+    @Min(value = 0, message = "La cantidad de cámaras debe ser mayor o igual a 0")
     private int camara;
     
 

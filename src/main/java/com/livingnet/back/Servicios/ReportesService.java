@@ -8,6 +8,7 @@ import com.livingnet.back.Model.ReporteModel;
 import com.livingnet.back.Model.ReporteRequest;
 import com.livingnet.back.Gestion.ReportesGestion;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,7 +49,7 @@ public class ReportesService {
 
     // agregar un nuevo reporte
     @PostMapping
-    public ReporteModel addReporte(@RequestBody ReporteModel reporte) {
+    public ReporteModel addReporte(@Valid @RequestBody ReporteModel reporte) {
         if(
             reporte.getActividad() !=null && 
             reporte.getAgencia() !=null && 
@@ -86,7 +87,7 @@ public class ReportesService {
 
     // actualizar un reporte según su id
     @PutMapping
-    public ReporteModel updateReporte(@RequestBody ReporteModel reporte) {
+    public ReporteModel updateReporte(@Valid @RequestBody ReporteModel reporte) {
         if(
            reporte.getActividad() !=null && 
             reporte.getAgencia() !=null && 

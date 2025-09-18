@@ -67,7 +67,7 @@ public class ImageProcessing {
 
             ReporteModel reporte = new ReporteModel();
             reporte.setFoto_url(filePath);
-            reporte  = runPythonScript(filePath, reporte);
+            //reporte  = runPythonScript(filePath, reporte);
 
             scheduleImageValidation(filePath);
                 
@@ -85,7 +85,6 @@ public class ImageProcessing {
     @GetMapping("/{file}")
     public ResponseEntity<byte[]> getImage(@PathVariable String file) {
         try {
-            System.out.println("Buscando imagen: " + file);
             Path imgPath = new File(UPLOAD_DIR + file).toPath();
 
             if (!Files.exists(imgPath)) {
@@ -132,27 +131,27 @@ public class ImageProcessing {
     }
 
     // Método para ejecutar el script de Python    //// aún no usado debido a los formatos de reportes
-    private ReporteModel runPythonScript(String imagePath, ReporteModel reporte) {
-        try {
-            // Ajusta la ruta del script
-            String pythonScript = "scripts/imageProcessing.py";
+    // private ReporteModel runPythonScript(String imagePath, ReporteModel repSYsorte) {
+    //     try {
+    //         // Ajusta la ruta del script
+    //         String pythonScript = "scripts/imageProcessing.py";
 
-            ProcessBuilder pb = new ProcessBuilder("python", pythonScript, imagePath);
-            pb.redirectErrorStream(true);
+    //         ProcessBuilder pb = new ProcessBuilder("python", pythonScript, imagePath);
+    //         pb.redirectErrorStream(true);
 
-            // Process process = pb.start();
+    //         // Process process = pb.start();
 
-            // Leer salida del script
-            // String output;
-            // try (Scanner scanner = new Scanner(process.getInputStream()).useDelimiter("\\A")) {
-            //     output = scanner.hasNext() ? scanner.next() : "";
-            // }
+    //         // Leer salida del script
+    //         // String output;
+    //         // try (Scanner scanner = new Scanner(process.getInputStream()).useDelimiter("\\A")) {
+    //         //     output = scanner.hasNext() ? scanner.next() : "";
+    //         // }
 
-            // int exitCode = process.waitFor();
-            return reporte;
+    //         // int exitCode = process.waitFor();
+    //         return reporte;
 
-        } catch (Exception e) {
-            return reporte;
-        }
-    }
+    //     } catch (Exception e) {
+    //         return reporte;
+    //     }
+    // }
 }
