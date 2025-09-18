@@ -71,5 +71,9 @@ public class ReportesGestion {
         return reportesDAO.checkImageExist(filePath);
     }
 
+    public boolean checkImage(String foto_url) {
+        return reportesDAO.checkImage(foto_url);
+    }
+
 
 }

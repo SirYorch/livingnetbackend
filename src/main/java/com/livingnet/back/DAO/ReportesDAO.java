@@ -1,5 +1,6 @@
 package com.livingnet.back.DAO;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -183,5 +184,11 @@ public class ReportesDAO {
             .setParameter("filePath", filePath)
             .getSingleResult();
         return count > 0;
+    }
+
+    //metodo que devuelve un booleano de si la imagen existe o no
+    public boolean checkImage(String path) {
+        File file = new File(ImageProcessing.UPLOAD_DIR + path);
+        return file.exists();
     }
 }

@@ -58,7 +58,7 @@ public class ReportesService {
             reporte.getEstado_actividad() !=null && 
             reporte.getFecha() !=null && 
             reporte.getFormato_actividad() !=null && 
-            reporte.getFoto_url() !=null && 
+            reporte.getFoto_url() !=null && reportesGestion.checkImage(reporte.getFoto_url()) && // comprueba que la imagen no ha sido borrada, tiene 15 minutos para hacer el reporte, revisar ImageProcessing el método async
             reporte.getHorafin() !=null &&
             reporte.getHorainicio() !=null &&
             reporte.getJefe_cuadrilla() !=null &&
