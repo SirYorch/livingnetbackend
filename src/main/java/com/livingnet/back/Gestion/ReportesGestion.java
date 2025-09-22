@@ -1,14 +1,18 @@
 package com.livingnet.back.Gestion;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.livingnet.back.DAO.ReporteVacioDAO;
 import com.livingnet.back.DAO.ReportesDAO;
 import com.livingnet.back.Model.ReporteModel;
 import com.livingnet.back.Model.ReporteRequest;
+import com.livingnet.back.Model.ReporteVacioModel;
 
 // Clase de gestión, util en caso de escalar, para manejar lógica de negocio
 // sirve principalmente para transicionar entre servicio persistencia, solo se comentan los métodos con lógica interna
@@ -16,6 +20,9 @@ import com.livingnet.back.Model.ReporteRequest;
 public class ReportesGestion {
 
     private final ReportesDAO reportesDAO;
+
+    @Autowired
+    ReporteVacioDAO reporteVacioDAO;
 
     public ReportesGestion(ReportesDAO reportesDAO) {
         this.reportesDAO = reportesDAO;
@@ -73,6 +80,56 @@ public class ReportesGestion {
 
     public boolean checkImage(String foto_url) {
         return reportesDAO.checkImage(foto_url);
+    }
+
+    public ReporteModel generarReporte(ReporteVacioModel rpm, Long idUsuario, ReporteModel reporte) {
+
+        ReporteVacioModel rp = reporteVacioDAO.getReporteVacio(idUsuario);
+
+        reporte.setHorainicio(rp.getHorainicio());
+        reporte.setFecha(rp.getFecha());
+        reporte.setHorafin(new Date()); // hora a la que se crea
+
+        reporte.setLatitudInicio(rp.getLatitudInicio());
+        reporte.setLongitudInicio(rp.getLongitudInicio());
+        reporte.setLatitudFin(rpm.getLatitudFin());
+        reporte.setLongitudFin(rpm.getLongitudFin());
+
+        //obtener los valores de reporte
+        reporte.setAgencia(rpm.getAgencia());
+        reporte.setActividad(rpm.getActividad());
+        reporte.setCuadrilla(rpm.getCuadrilla());
+        reporte.setJefe_cuadrilla(rpm.getJefe_cuadrilla());
+        reporte.setTipo_actividad(rpm.getTipo_actividad());
+        reporte.setFormato_actividad(rpm.getFormato_actividad());
+        reporte.setComplejidad_actividad(rpm.getComplejidad_actividad());
+        reporte.setEstado_actividad(rpm.getEstado_actividad());
+        reporte.setClima(rpm.getClima());
+
+        // Strings opcionales
+        reporte.setAyudante_tecnico(rpm.getAyudante_tecnico());
+        reporte.setMotivo_retraso(rpm.getMotivo_retraso());
+        reporte.setObservaciones(rpm.getObservaciones());
+
+        // Doubles
+        reporte.setKilometraje_inicio(rpm.getKilometraje_inicio());
+        reporte.setKilometraje_fin(rpm.getKilometraje_fin());
+
+        // Ints
+        reporte.setRouter(rpm.getRouter());
+        reporte.setOnu(rpm.getOnu());
+        reporte.setDrop(rpm.getDrop());
+        reporte.setRoseta(rpm.getRoseta());
+        reporte.setTensores(rpm.getTensores());
+        reporte.setConectores(rpm.getConectores());
+        reporte.setCamara(rpm.getCamara());        
+
+
+        //eliminamos el reportevacío del usuario 
+        reporteVacioDAO.deleteReporteVacio(idUsuario);
+        return reportesDAO.addReporte(reporte);
+
+        
     }
 
 

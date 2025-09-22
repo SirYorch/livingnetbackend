@@ -24,6 +24,7 @@ public class JwtFilter implements Filter {
     // variables de texto, permiten tener los mismos mensajes de error, y enviar códigos distintos dependiendo el error.
     private final String sinPermiso = "Permisos Insuficientes";
     private final String invalida = "Acción invalida";
+    private final String usuarioInexistente= "Usuario no existe";
 
     public JwtFilter(UsuarioGestion usuarioGestion) {
         this.usuarioGestion = usuarioGestion;
@@ -46,19 +47,21 @@ public class JwtFilter implements Filter {
                 String username = jwtUtil.extractUsername(token);
                 
                 ValidatePermissions(req, username);
-                if (username == null) {
-                    throw new Exception("Usuario no encontrado en el token");
-                }
+                
                 chain.doFilter(request, response);
             } catch (Exception e) {
                 if(e.getMessage().equals(sinPermiso)){
+                    System.out.print("sin permiso");
                     res.sendError(403, e.getMessage());    
                 } else if(e.getMessage().equals(invalida)){
+                    System.out.print("invalida");
                     res.sendError(409, e.getMessage());    
                 } 
+                System.out.print(e);
                 res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             }
         } else {
+            
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token faltante");
         }
     }
@@ -66,29 +69,76 @@ public class JwtFilter implements Filter {
 
     //método para validar permisos en las solicitudes http, por el momento, edición es solo permitida por administradores.
     private void ValidatePermissions(HttpServletRequest req, String username) throws Exception {
-        StringBuilder sb = new StringBuilder(FilterConfig.direccionUsers);
-        sb.deleteCharAt(7);
-        sb.deleteCharAt(6);
-        if(req.getMethod().equals("GET")){
-            return;
-        } else {
-            if (req.getRequestURI().contains(sb)){
-                UsuarioModel user = usuarioGestion.getUsuarioPorMail(username);
-                if (!user.getRol().equals(UsuarioModel.ROL_ADMIN)) {
-                    throw new Exception(this.sinPermiso);
+
+        UsuarioModel user = usuarioGestion.getUsuarioPorMail(username);
+        if(user == null){
+            throw new Exception(usuarioInexistente);
+        }
+
+
+        //si método == usuarios, solo se puede hacer un get.
+        StringBuilder du = new StringBuilder(FilterConfig.direccionUsers); //String para usuarios
+        du.deleteCharAt(7);
+        du.deleteCharAt(6); 
+        
+        // 
+        StringBuilder drv = new StringBuilder(FilterConfig.direccionReporteVacio); //String para reportesVacio
+        drv.deleteCharAt(7);
+        drv.deleteCharAt(6); 
+
+
+        ///AGREGAR NUEVAS DIRECCIONES DESDE EL FILTRO PARA PODER MANIPULARLAS
+        /// 
+        /// 
+        /// 
+        /// 
+        /// 
+        
+        
+
+        // si es solicitud a usuarios
+        if (req.getRequestURI().contains(du)){
+
+            if(req.getMethod().equals("GET")){ // todos pueden hacer get
+                return;
+            } 
+
+            if (!user.getRol().equals(UsuarioModel.ROL_ADMIN)) { //  si es distinto de get, y no es admin hay error
+                throw new Exception(this.sinPermiso);
+            }
+
+            if(req.getMethod().equals("DELETE")) { // un administrador no se puede eliminar a si mismo
+                
+                if(validateParity(req, user)){ // si id coincide error
+                    throw new Exception(this.invalida);
                 }
 
-                if(req.getMethod().equals("DELETE")) {// un administrador no se puede eliminar a si mismo
-                    String path = req.getRequestURI();   
-                    String userIdStr = path.substring(path.lastIndexOf("/") + 1);
-                    long userId = Long.parseLong(userIdStr);
-
-                    if(user.getId() == userId){
-                        throw new Exception(this.invalida);
-                    }
-
-                }
             }
         }
+        
+        
+        //si es solicitud a reportesvacio
+        if (req.getRequestURI().contains(drv)){
+            
+            // solo se puede generar si es tecnico
+
+            if(!validateParity(req, user)){ // si el id es distinto da error
+                throw new Exception(this.invalida);
+            }
+
+            
+            if(user.getRol().equals(UsuarioModel.ROL_TECNICO) || user.getRol().equals(UsuarioModel.ROL_ADMIN)){ 
+                return;
+            }
+        }
+    
+    
+    }
+
+    private boolean validateParity(HttpServletRequest req, UsuarioModel user ){
+        String path = req.getRequestURI();   
+        String userIdStr = path.substring(path.lastIndexOf("/") + 1);
+        long userId = Long.parseLong(userIdStr);
+        return (user.getId() == userId);
     }
 }

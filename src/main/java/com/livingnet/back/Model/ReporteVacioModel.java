@@ -2,149 +2,118 @@ package com.livingnet.back.Model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-// clase de reportes, la tabla en db se llama reportes,
-// contiene persistencia.
+// clase de reportes vacíos, la tabla en db se llama reportes_vacios,
+// contiene persistencia, todos los campos son nulleables excepto id
 
 @Entity
-@Table(name = "reportes")
-public class ReporteModel {
-    
+@Table(name = "reportes_vacios")
+public class ReporteVacioModel {
+
     // identificador, generado automático
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
+
+    // Referencia al usuario
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "usuario_id")
+    @JsonIgnore 
+    private UsuarioModel usuario;
 
     //variables de tipo fecha colocados en los reportes
-    @Column(nullable = false)
-    @NotNull(message = "La fecha es obligatoria")
+    @Column(nullable = true)
     private Date fecha;
 
-    @Column(nullable = false)
-    @NotNull(message = "La hora de inicio es obligatoria")
-    private Date horainicio;
-
+    //esto se va a autorellenar
     @Column(nullable = true)
-    @NotNull(message = "El lugar de inicio es obligatorio")
+    private Date horainicio;
+    @Column(nullable = true)
+    private Date horafin;
+
+
+    //esto se va a autorellenar
+    @Column(nullable = true)
     private String latitudInicio;
     @Column(nullable = true)
-    @NotNull(message = "El lugar de inicio es obligatorio")
     private String longitudInicio;
 
 
+
+    
     @Column(nullable = true)
-    @NotNull(message = "El lugar de inicio es obligatorio")
     private String latitudFin;
     @Column(nullable = true)
-    @NotNull(message = "La Lugar de inicio es obligatorio")
     private String longitudFin;
 
 
 
-    @Column(nullable = false)
-    @NotNull(message = "La hora de fin es obligatoria")
-    private Date horafin;
-
-    //variables de String fecha colocados en los reportes
-    @Column(nullable = false)
-    @NotBlank(message = "La agencia es obligatoria")
+    //variables de String colocados en los reportes
+    @Column(nullable = true)
     private String agencia;
-
-    @Column(nullable = false)
-    @NotBlank(message = "La actividad es obligatoria")
+    @Column(nullable = true)
     private String actividad;
-
-    @Column(nullable = false)
-    @NotBlank(message = "La cuadrilla es obligatoria")
+    @Column(nullable = true)
     private String cuadrilla;
-
-    @Column(nullable = false)
-    @NotBlank(message = "El jefe de cuadrilla es obligatorio")
-    private String jefe_cuadrilla;  
-
-    @Column(nullable = false)
-    @NotBlank(message = "El tipo de actividad es obligatorio")
+    @Column(nullable = true)
+    private String jefe_cuadrilla;
+    @Column(nullable = true)
     private String tipo_actividad;
-
-    @Column(nullable = false)
-    @NotBlank(message = "El formato de actividad es obligatorio")
-    private String formato_actividad;   
-
-    @Column(nullable = false)
-    @NotBlank(message = "La complejidad de actividad es obligatoria")
+    @Column(nullable = true)
+    private String formato_actividad;
+    @Column(nullable = true)
     private String complejidad_actividad;
-
-    @Column(nullable = false)
-    @NotBlank(message = "El estado de actividad es obligatorio")
+    @Column(nullable = true)
     private String estado_actividad;
-
-    @Column(nullable = false)
-    @NotBlank(message = "El clima es obligatorio")
+    @Column(nullable = true)
     private String clima;
-
     @Column(nullable = true)
     private String foto_url;
 
-    //variables de tipo String que pueden serr enviadas nulas, 
+    //variables de tipo String que pueden ser enviadas nulas,
     @Column(nullable = true)
     private String ayudante_tecnico;
     @Column(nullable = true)
     private String motivo_retraso;
     @Column(nullable = true)
     private String observaciones;
-    
-    // variables de tipo double
-    @Column(nullable = false)
-    @Min(value = 0, message = "El kilometraje de inicio debe ser mayor o igual a 0")
-    private double kilometraje_inicio;
 
-    @Column(nullable = false)
-    @Min(value = 0, message = "El kilometraje de fin debe ser mayor o igual a 0")
+    // variables de tipo double
+    @Column(nullable = true)
+    private double kilometraje_inicio;
+    @Column(nullable = true)
     private double kilometraje_fin;
 
     // variables de tipo int
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de routers debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int router;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de ONU debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int onu;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de drop debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int drop;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de roseta debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int roseta;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de tensores debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int tensores;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de conectores debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int conectores;
-
-    @Column(nullable = false)
-    @Min(value = 0, message = "La cantidad de cámaras debe ser mayor o igual a 0")
+    @Column(nullable = true)
     private int camara;
-    
 
-    public ReporteModel() {}
+    public ReporteVacioModel() {}
 
-    //// getters y setters, no es necesario seguir bajando
+    // getters y setters
 
     public long getId() {
         return this.id;
@@ -152,6 +121,14 @@ public class ReporteModel {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public UsuarioModel getUsuario() {
+        return this.usuario;
+    }
+
+    public void setUsuario(UsuarioModel usuario) {
+        this.usuario = usuario;
     }
 
     public Date getFecha() {
@@ -355,7 +332,6 @@ public class ReporteModel {
     }
 
 
-
     public String getLatitudInicio() {
         return this.latitudInicio;
     }
@@ -388,5 +364,4 @@ public class ReporteModel {
         this.longitudFin = longitudFin;
     }
 
-    
 }

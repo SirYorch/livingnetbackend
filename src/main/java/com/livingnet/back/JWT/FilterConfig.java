@@ -15,6 +15,7 @@ public class FilterConfig {
     public static String direccionValidate = "/validate/*";
     public static String direccionImage = "/image/*";
     public static String direccionUsers = "/users/*";
+    public static String direccionReporteVacio = "/generate/*";
 
     // bean para registrar el filtro
     @Bean
@@ -26,6 +27,7 @@ public class FilterConfig {
                 direccionReports,
                 direccionValidate,
                 direccionImage,
+                direccionReporteVacio,
                 direccionUsers // en caso de más urls con filtro, se colocan aquí 
         );
         return registrationBean;

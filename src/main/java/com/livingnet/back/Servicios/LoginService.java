@@ -38,6 +38,7 @@ public class LoginService {
                 
                 Map<String, String> response = new HashMap<>();
                 response.put("token", token);
+                response.put("id", usuarioEncontrado.getId()+"");
                 return ResponseEntity.ok(response);
             } else {
                 throw new Exception("Error de validacion");

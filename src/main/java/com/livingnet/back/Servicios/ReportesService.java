@@ -11,7 +11,6 @@ import com.livingnet.back.Gestion.ReportesGestion;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.GetMapping;
 
 
 
@@ -47,44 +46,6 @@ public class ReportesService {
         return reportesGestion.getCantidadReportes(body);
     }
 
-    // agregar un nuevo reporte
-    @PostMapping
-    public ReporteModel addReporte(@Valid @RequestBody ReporteModel reporte) {
-        if(
-            reporte.getActividad() !=null && 
-            reporte.getAgencia() !=null && 
-            reporte.getClima() !=null &&
-            reporte.getComplejidad_actividad()!=null && 
-            reporte.getCuadrilla() !=null && 
-            reporte.getEstado_actividad() !=null && 
-            reporte.getFecha() !=null && 
-            reporte.getFormato_actividad() !=null && 
-            reporte.getFoto_url() !=null && reportesGestion.checkImage(reporte.getFoto_url()) && // comprueba que la imagen no ha sido borrada, tiene 15 minutos para hacer el reporte, revisar ImageProcessing el método async
-            reporte.getHorafin() !=null &&
-            reporte.getHorainicio() !=null &&
-            reporte.getJefe_cuadrilla() !=null &&
-            reporte.getTipo_actividad() !=null&&
-            reporte.getCamara() > 0 && 
-            reporte.getConectores()  > 0 && 
-            reporte.getDrop()  > 0 &&
-            reporte.getKilometraje_fin() > 0 &&
-            reporte.getKilometraje_inicio()  > 0 &&
-            reporte.getOnu() > 0 &&
-            reporte.getRoseta()  > 0 &&
-            reporte.getRouter()  > 0 &&
-            reporte.getTensores()  > 0 &&
-            reporte.getId() == 0
-            ){
-                try{
-                    return  reportesGestion.addReporte(reporte);
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-            return null;
-        
-    }
-
     // actualizar un reporte según su id
     @PutMapping
     public ReporteModel updateReporte(@Valid @RequestBody ReporteModel reporte) {
@@ -102,16 +63,16 @@ public class ReportesService {
             reporte.getHorainicio() !=null &&
             reporte.getJefe_cuadrilla() !=null &&
             reporte.getTipo_actividad() !=null&&
-            reporte.getCamara() > 0 && 
-            reporte.getConectores()  > 0 && 
-            reporte.getDrop()  > 0 &&
-            reporte.getKilometraje_fin() > 0 &&
-            reporte.getKilometraje_inicio()  > 0 &&
-            reporte.getOnu() > 0 &&
-            reporte.getRoseta()  > 0 &&
-            reporte.getRouter()  > 0 &&
-            reporte.getTensores()  > 0 &&
-            reporte.getId() != 0
+            reporte.getCamara() >= 0 && 
+            reporte.getConectores()  >= 0 && 
+            reporte.getDrop()  >= 0 &&
+            reporte.getKilometraje_fin() >= 0 &&
+            reporte.getKilometraje_inicio()  >= 0 &&
+            reporte.getOnu() >= 0 &&
+            reporte.getRoseta()  >= 0 &&
+            reporte.getRouter()  >= 0 &&
+            reporte.getTensores()  >= 0 &&
+            reporte.getId() != 0 // hora de inicio, hora de fin, y ubicaciones no se editan ni aunque se cambien
             ){
             try{
                 ReporteModel dato  =  reportesGestion.updateReporte(reporte);
@@ -142,5 +103,6 @@ public class ReportesService {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("No se consiguieron los deplegables");
         }
     }
-    
+
+
 }

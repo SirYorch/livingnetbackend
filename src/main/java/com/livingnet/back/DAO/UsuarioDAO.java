@@ -82,4 +82,15 @@ public class UsuarioDAO {
             return null;
         }
     }
+
+    public UsuarioModel getUsuarioPorId(Long id) {
+        try {
+            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.id = :id", UsuarioModel.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

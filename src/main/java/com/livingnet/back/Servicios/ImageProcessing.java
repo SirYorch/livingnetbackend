@@ -40,7 +40,7 @@ public class ImageProcessing {
 
     // permite subir imagenes, serán guardadas la variable estática según upload DIR
     @PostMapping("/upload")
-    public ReporteModel uploadImage(@RequestParam("file") MultipartFile file) {
+    public String uploadImage(@RequestParam("file") MultipartFile file) {
         try {
             // Crear carpeta si no existe
             File uploadDir = new File(UPLOAD_DIR);
@@ -71,12 +71,12 @@ public class ImageProcessing {
 
             scheduleImageValidation(filePath);
                 
-            return reporte;
+            return filePath;
 
         } catch (IOException e) {
             ReporteModel errorReporte = new ReporteModel();
             errorReporte.setFoto_url(null);
-            return errorReporte;
+            return null;
         }
     }
 
