@@ -19,7 +19,9 @@ public class JwtUtil {
     }
     
     //clave jwt habrá de ser cambiada para las validaciones
-    private static final SecretKey key = Keys.hmacShaKeyFor("JHASGDjvbadbvaisdhg29138-)(*&^VAGV2)".getBytes());
+    private static final SecretKey key = Keys.hmacShaKeyFor(
+    System.getenv("JWT_SECRET").getBytes()
+);
 
 
     //clase para generación del token
