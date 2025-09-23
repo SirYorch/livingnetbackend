@@ -4,11 +4,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.livingnet.back.Gestion.ReportesGestion;
+// import com.livingnet.back.Gestion.ReportesGestion;
 import com.livingnet.back.Model.ReporteModel;
 
 import java.io.File;
@@ -18,8 +17,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 //clase de servicio, sirve para solicitudes http referenciales a imagenes
 @RestController
@@ -30,11 +27,11 @@ public class ImageProcessing {
     // variable estática de dónde se guardan las imagenes, usada para eliminar imagenes, crear imagenes, y obtener imagenes.
     public static final String UPLOAD_DIR = "uploads/";
 
-    private final ReportesGestion reportesGestion;
+    // private final ReportesGestion reportesGestion;
 
-    public ImageProcessing(ReportesGestion reportesGestion) {
-        this.reportesGestion = reportesGestion;
-    }
+    // public ImageProcessing(ReportesGestion reportesGestion) {
+    //     this.reportesGestion = reportesGestion;
+    // }
 
 
 
@@ -58,7 +55,7 @@ public class ImageProcessing {
             // Construir la ruta del archivo
             String filePath = "file-" + formattedDateTime + ".jpg"; // las imagenes se construyen de la misma forma siempre, utilizamos file- la fecha, hora minutos y segundos a la que fue subida, y el archivo de extensión.
             
-            File savedFile = new File(UPLOAD_DIR +filePath);
+            File savedFile = new File(UPLOAD_DIR +filePath.toLowerCase());
             try (FileOutputStream fos = new FileOutputStream(savedFile)) {
                 fos.write(file.getBytes());
             }
@@ -69,7 +66,7 @@ public class ImageProcessing {
             reporte.setFoto_url(filePath);
             //reporte  = runPythonScript(filePath, reporte);
 
-            scheduleImageValidation(filePath);
+            // scheduleImageValidation(filePath);
                 
             return filePath;
 
@@ -85,7 +82,8 @@ public class ImageProcessing {
     @GetMapping("/{file}")
     public ResponseEntity<byte[]> getImage(@PathVariable String file) {
         try {
-            Path imgPath = new File(UPLOAD_DIR + file).toPath();
+            Path imgPath = new File(UPLOAD_DIR + file.toLowerCase()).toPath();
+            System.out.println(imgPath.toString());
 
             if (!Files.exists(imgPath)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -112,23 +110,23 @@ public class ImageProcessing {
     
     // método de validación de creación de reporte, siguiendo el flujo de trabajo
     // una imagen se sube y se es devuelta su url, si no se crea un reporte con esa url de imagen en 15 mintuos la imagen es eliminada, este método controla el tiempo y la función de eliminación.
-    @Async
-    public void scheduleImageValidation(String filePath) {
-        CompletableFuture.delayedExecutor(15, TimeUnit.MINUTES).execute(() -> {
-            try {
-                // Verifica si hay algún reporte con esa URL
-                boolean exists = reportesGestion.checkImageExist(filePath);
-                if (!exists) {
-                    File file = new File(UPLOAD_DIR + filePath);
-                    if (file.exists()) {
-                        file.delete();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
+    // @Async
+    // public void scheduleImageValidation(String filePath) {
+    //     CompletableFuture.delayedExecutor(15, TimeUnit.MINUTES).execute(() -> {
+    //         try {
+    //             // Verifica si hay algún reporte con esa URL
+    //             boolean exists = reportesGestion.checkImageExist(filePath);
+    //             if (!exists) {
+    //                 File file = new File(UPLOAD_DIR + filePath);
+    //                 if (file.exists()) {
+    //                     file.delete();
+    //                 }
+    //             }
+    //         } catch (Exception e) {
+    //             e.printStackTrace();
+    //         }
+    //     });
+    // }
 
     // Método para ejecutar el script de Python    //// aún no usado debido a los formatos de reportes
     // private ReporteModel runPythonScript(String imagePath, ReporteModel repSYsorte) {

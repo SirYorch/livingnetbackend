@@ -27,6 +27,13 @@ public class ReporteVacioDAO{
         rvm.setUsuario(usuario);
         rvm.setHorainicio(new Date());
         rvm.setFecha(new Date());
+        rvm.setRouter(0);
+        rvm.setOnu(0);
+        rvm.setRoseta(0);
+        rvm.setDrop(0);
+        rvm.setTensores(0);
+        rvm.setConectores(0);
+        rvm.setCamara(0);
         em.persist(rvm);
         return rvm;
     }
@@ -50,6 +57,7 @@ public class ReporteVacioDAO{
 
     @Transactional
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm) {
+        
         return em.merge(rpm);
     }
 }

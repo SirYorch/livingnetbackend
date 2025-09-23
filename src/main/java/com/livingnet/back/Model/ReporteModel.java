@@ -2,8 +2,11 @@ package com.livingnet.back.Model;
 
 import java.util.Date;
 
+import com.livingnet.back.JWT.UpperCaseListener;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,8 +18,10 @@ import jakarta.validation.constraints.NotNull;
 // clase de reportes, la tabla en db se llama reportes,
 // contiene persistencia.
 
+
 @Entity
 @Table(name = "reportes")
+@EntityListeners(UpperCaseListener.class)
 public class ReporteModel {
     
     // identificador, generado automático

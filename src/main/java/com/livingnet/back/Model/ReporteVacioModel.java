@@ -3,9 +3,11 @@ package com.livingnet.back.Model;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.livingnet.back.JWT.UpperCaseListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,6 +21,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "reportes_vacios")
+@EntityListeners(UpperCaseListener.class)
 public class ReporteVacioModel {
 
     // identificador, generado automático

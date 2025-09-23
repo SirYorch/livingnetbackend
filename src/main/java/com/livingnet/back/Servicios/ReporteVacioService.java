@@ -37,8 +37,11 @@ public class ReporteVacioService {
     
 
     // Generar un nuevo reporte vacío para un usuario, agregando la hora del servidor en horaInicio
-    @PostMapping("/{idUsuario}")
-    public ReporteVacioModel generarReporteVacio(@RequestBody LocationRequest cuerpo, @PathVariable Long idUsuario) {
+       @PostMapping("/{idUsuario}")
+    public ReporteVacioModel generarReporteVacio(
+        @RequestBody LocationRequest cuerpo, 
+        @PathVariable Long idUsuario
+        ) {
         return reporteVacioGestion.generarReporteVacio(idUsuario, cuerpo);
     }
 
@@ -47,10 +50,17 @@ public class ReporteVacioService {
         return reporteVacioGestion.eliminarReporteVacio(idUsuario);
     }
     
-    @PutMapping("/{idUsuario}")
-    public ReporteVacioModel putMethodName(@PathVariable Long idUsuario, @RequestBody ReporteVacioModel rpm) {
+    @PutMapping(value="/{idUsuario}", consumes = {"multipart/form-data"})
+    public ReporteVacioModel putMethodName(
+            @RequestPart(value = "file", required = false) MultipartFile file,
+            @Valid @RequestPart("reporte") ReporteVacioModel rpm,
+            @PathVariable Long idUsuario) {
         try {
-            return reporteVacioGestion.actualizarReporteVacio(rpm,idUsuario);
+            String uploaded = "";
+            if (file != null && !file.isEmpty()) {
+                uploaded = procesamiento.uploadImage(file);
+            }
+            return reporteVacioGestion.actualizarReporteVacio(rpm,idUsuario, uploaded);
         } catch (Exception e) {
             return null;
         }
@@ -102,6 +112,11 @@ public class ReporteVacioService {
 
             if (valido) {
 
+                if (uploaded != ""|| reporte.getFoto_url()!= null) {
+                    reporte.setFoto_url(uploaded);
+                } else {
+                    reporte.setFoto_url(null);
+                }
                 rm = reportesGestion.generarReporte(reporte, idUsuario, rm);
 
 

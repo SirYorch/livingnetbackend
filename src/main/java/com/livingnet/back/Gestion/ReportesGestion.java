@@ -122,7 +122,8 @@ public class ReportesGestion {
         reporte.setRoseta(rpm.getRoseta());
         reporte.setTensores(rpm.getTensores());
         reporte.setConectores(rpm.getConectores());
-        reporte.setCamara(rpm.getCamara());        
+        reporte.setCamara(rpm.getCamara());
+        reporte.setFoto_url(rpm.getFoto_url());        
 
 
         //eliminamos el reportevacío del usuario 

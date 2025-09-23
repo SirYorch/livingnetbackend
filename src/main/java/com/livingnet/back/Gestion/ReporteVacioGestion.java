@@ -19,7 +19,7 @@ public class ReporteVacioGestion {
 
     public ReporteVacioModel generarReporteVacio(Long idUsuario, LocationRequest cuerpo) {
         UsuarioModel user  = usuarioDAO.getUsuarioPorId(idUsuario);
-        return reporteVacioDAO.createReporte(idUsuario, cuerpo, user );
+        return reporteVacioDAO.createReporte(idUsuario, cuerpo, user);
     }
 
     public ReporteVacioModel getReporteVacio(Long idUsuario) {
@@ -30,7 +30,7 @@ public class ReporteVacioGestion {
         return reporteVacioDAO.deleteReporteVacio(idUsuario);
     }
 
-    public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario) {
+    public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
         ReporteVacioModel reporte = getReporteVacio(idUsuario);
 
         // fechas y ubicacion no van
@@ -65,6 +65,11 @@ public class ReporteVacioGestion {
         reporte.setConectores(rpm.getConectores());
         reporte.setCamara(rpm.getCamara());
 
+        if( uploaded != "" ){
+            reporte.setFoto_url(uploaded);
+        } else {
+            reporte.setFoto_url(null);
+        }
 
 
         return reporteVacioDAO.actualizarReporteVacio(reporte);
