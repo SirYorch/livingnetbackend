@@ -5,6 +5,8 @@ import com.livingnet.back.DAO.UsuarioDAO;
 import com.livingnet.back.Model.LocationRequest;
 import com.livingnet.back.Model.ReporteVacioModel;
 import com.livingnet.back.Model.UsuarioModel;
+import com.livingnet.back.Servicios.ImageProcessing;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ public class ReporteVacioGestion {
 
     @Autowired
     private ReporteVacioDAO reporteVacioDAO;
+
+
     @Autowired
     private UsuarioDAO usuarioDAO;
 
@@ -31,6 +35,15 @@ public class ReporteVacioGestion {
     }
 
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
+
+        if (rpm.getFoto_url() != null && rpm.getFoto_url() != "" ) {// sirve para eliminar la imagen si esta se cambia
+            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rpm.getFoto_url());
+            if (file.exists()) {
+                file.delete();
+            }
+            
+        }
+
         ReporteVacioModel reporte = getReporteVacio(idUsuario);
 
         // fechas y ubicacion no van
