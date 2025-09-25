@@ -1,6 +1,9 @@
 package com.livingnet.back.DAO;
 
 import java.io.File;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
@@ -74,7 +77,7 @@ public class ReportesDAO {
         StringBuilder jpql = new StringBuilder(baseQuery);
 
         if (request.getFecha() != null) {
-            jpql.append(" AND r.fecha = :fecha");
+            jpql.append(" AND r.fecha BETWEEN :fechaInicio AND :fechaFin");
         }
         if (request.getAgencia() != null && !request.getAgencia().isEmpty()) {
             jpql.append(" AND r.agencia = :agencia");
@@ -113,7 +116,16 @@ public class ReportesDAO {
 
         // Seteo de parámetros
         if (request.getFecha() != null) {
-            query.setParameter("fecha", request.getFecha());
+            LocalDate fechaLocal = request.getFecha().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+            LocalDateTime inicio = fechaLocal.atStartOfDay();
+            LocalDateTime fin = fechaLocal.plusDays(1).atStartOfDay().minusNanos(1);
+
+            query.setParameter("fechaInicio", java.util.Date.from(inicio.atZone(ZoneId.systemDefault()).toInstant()));
+            query.setParameter("fechaFin", java.util.Date.from(fin.atZone(ZoneId.systemDefault()).toInstant()));
+
         }
         if (request.getAgencia() != null && !request.getAgencia().isEmpty()) {
             query.setParameter("agencia", request.getAgencia());
