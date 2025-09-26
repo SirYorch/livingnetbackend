@@ -78,8 +78,18 @@ public class ReporteVacioService {
             String uploaded = "";
             ReporteModel rm = new ReporteModel();
             if (file != null && !file.isEmpty()) {
+                if(reporte.getFoto_url() != null && reporte.getFoto_url() != ""){// si ya habia una imagen, se elimina
+                    java.io.File oldfile = new java.io.File(ImageProcessing.UPLOAD_DIR + reporte.getFoto_url().toLowerCase());
+                    if (oldfile.exists()) {
+                        oldfile.delete();
+                    }
+                }
                 uploaded = procesamiento.uploadImage(file);
                 rm.setFoto_url(uploaded);    
+            } else if (reporte.getFoto_url() != null && reporte.getFoto_url() != "") {
+                rm.setFoto_url(reporte.getFoto_url());
+            } else {
+                rm.setFoto_url(null);
             }
 
             // Validar los campos obligatorios
@@ -112,11 +122,6 @@ public class ReporteVacioService {
 
             if (valido) {
 
-                if (uploaded != ""|| reporte.getFoto_url()!= null) {
-                    reporte.setFoto_url(uploaded);
-                } else {
-                    reporte.setFoto_url(null);
-                }
                 rm = reportesGestion.generarReporte(reporte, idUsuario, rm);
 
 

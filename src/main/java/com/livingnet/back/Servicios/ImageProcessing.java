@@ -106,6 +106,12 @@ public class ImageProcessing {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    public void deleteImagen(String valor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteImagen'");
+    }
     
     
     // método de validación de creación de reporte, siguiendo el flujo de trabajo

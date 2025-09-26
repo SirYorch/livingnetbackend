@@ -71,7 +71,7 @@ public class ReportesGestion {
         existingReporte.setConectores(reporte.getConectores());
         existingReporte.setCamara(reporte.getCamara());
 
-        
+
 
 
 
@@ -152,7 +152,6 @@ public class ReportesGestion {
         reporte.setTensores(rpm.getTensores());
         reporte.setConectores(rpm.getConectores());
         reporte.setCamara(rpm.getCamara());
-        reporte.setFoto_url(rpm.getFoto_url());        
 
 
         //eliminamos el reportevacío del usuario 

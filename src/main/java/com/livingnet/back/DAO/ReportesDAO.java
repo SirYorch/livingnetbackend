@@ -45,6 +45,7 @@ public class ReportesDAO {
     //método para eliminar reportes, devuelve un booleano si el reporte se elimina o no
     @Transactional
     public boolean deleteReporte(Long id) {
+        
         return em.createQuery("DELETE FROM ReporteModel r WHERE r.id = :id")
                 .setParameter("id", id)
                 .executeUpdate() > 0;

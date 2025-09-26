@@ -56,11 +56,11 @@ public class ReportesService {
             reporte.getComplejidad_actividad()!=null && 
             reporte.getCuadrilla() !=null && 
             reporte.getEstado_actividad() !=null && 
-            reporte.getFecha() !=null && 
+            // reporte.getFecha() !=null && 
             reporte.getFormato_actividad() !=null && 
-            reporte.getFoto_url() !=null && 
-            reporte.getHorafin() !=null &&
-            reporte.getHorainicio() !=null &&
+            // reporte.getFoto_url() !=null && 
+            // reporte.getHorafin() !=null &&
+            // reporte.getHorainicio() !=null &&
             reporte.getJefe_cuadrilla() !=null &&
             reporte.getTipo_actividad() !=null&&
             reporte.getCamara() >= 0 && 

@@ -44,7 +44,7 @@ public class ReporteVacioGestion {
 
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
 
-        if (rpm.getFoto_url() != null && rpm.getFoto_url() != "" && uploaded != null) {// sirve para eliminar la imagen si esta se cambia
+        if ((rpm.getFoto_url() != null && rpm.getFoto_url() != "" )&&( uploaded != null && uploaded != "")) {// sirve para eliminar la imagen si esta se cambia
             java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rpm.getFoto_url().toLowerCase());
             if (file.exists()) {
                 file.delete();
@@ -87,6 +87,8 @@ public class ReporteVacioGestion {
 
         if( uploaded != "" ){
             reporte.setFoto_url(uploaded);
+        } else if (rpm.getFoto_url() != null && rpm.getFoto_url() != "") {
+            reporte.setFoto_url(rpm.getFoto_url());
         } else {
             reporte.setFoto_url(null);
         }
