@@ -31,17 +31,24 @@ public class ReporteVacioGestion {
     }
 
     public boolean eliminarReporteVacio(Long idUsuario) {
+        // eliminar imagen asociada
+        ReporteVacioModel rvm = reporteVacioDAO.getReporteVacio(idUsuario);
+        if (rvm.getFoto_url() != null && rvm.getFoto_url() != "") {// sirve para eliminar la imagen si esta se cambia
+            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rvm.getFoto_url().toLowerCase());
+            if (file.exists()) {
+                file.delete();
+            }
+        }
         return reporteVacioDAO.deleteReporteVacio(idUsuario);
     }
 
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
 
-        if (rpm.getFoto_url() != null && rpm.getFoto_url() != "" ) {// sirve para eliminar la imagen si esta se cambia
-            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rpm.getFoto_url());
+        if (rpm.getFoto_url() != null && rpm.getFoto_url() != "" && uploaded != null) {// sirve para eliminar la imagen si esta se cambia
+            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rpm.getFoto_url().toLowerCase());
             if (file.exists()) {
                 file.delete();
             }
-            
         }
 
         ReporteVacioModel reporte = getReporteVacio(idUsuario);

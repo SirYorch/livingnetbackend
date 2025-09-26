@@ -53,6 +53,7 @@ public class ReportesDAO {
     //método para actualizar reporte realiza un merge en la base de datos, utiliza el id, aunque de forma implicita
     @Transactional
     public ReporteModel updateReporte(ReporteModel reporte) {
+
         
         return em.merge(reporte);
     }
@@ -202,5 +203,15 @@ public class ReportesDAO {
     public boolean checkImage(String path) {
         File file = new File(ImageProcessing.UPLOAD_DIR + path);
         return file.exists();
+    }
+
+    public ReporteModel getReporteById(long id) {
+         try {
+            return em.createQuery("SELECT r FROM ReporteModel r WHERE id = :id", ReporteModel.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (Exception e){
+            return null;
+        }
     }
 }

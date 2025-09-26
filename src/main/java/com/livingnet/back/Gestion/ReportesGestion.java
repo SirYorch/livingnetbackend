@@ -46,6 +46,35 @@ public class ReportesGestion {
     }
 
     public ReporteModel updateReporte(ReporteModel reporte) {
+        // get reporte by id
+        ReporteModel existingReporte = reportesDAO.getReporteById(reporte.getId());
+        existingReporte.setActividad(reporte.getActividad());
+        existingReporte.setAgencia(reporte.getAgencia());
+        existingReporte.setClima(reporte.getClima());
+        existingReporte.setComplejidad_actividad(reporte.getComplejidad_actividad());
+        existingReporte.setCuadrilla(reporte.getCuadrilla());
+        existingReporte.setEstado_actividad(reporte.getEstado_actividad());
+        existingReporte.setFormato_actividad(reporte.getFormato_actividad());
+        existingReporte.setFoto_url(reporte.getFoto_url());
+        existingReporte.setMotivo_retraso(reporte.getMotivo_retraso());
+        existingReporte.setObservaciones(reporte.getObservaciones());
+        existingReporte.setTipo_actividad(reporte.getTipo_actividad());
+        existingReporte.setJefe_cuadrilla(reporte.getJefe_cuadrilla());
+        existingReporte.setAyudante_tecnico(reporte.getAyudante_tecnico());
+        existingReporte.setKilometraje_inicio(reporte.getKilometraje_inicio());
+        existingReporte.setKilometraje_fin(reporte.getKilometraje_fin());
+        existingReporte.setRouter(reporte.getRouter());
+        existingReporte.setOnu(reporte.getOnu());
+        existingReporte.setDrop(reporte.getDrop());
+        existingReporte.setRoseta(reporte.getRoseta());
+        existingReporte.setTensores(reporte.getTensores());
+        existingReporte.setConectores(reporte.getConectores());
+        existingReporte.setCamara(reporte.getCamara());
+
+        
+
+
+
         return reportesDAO.updateReporte(reporte);    
     }
 
