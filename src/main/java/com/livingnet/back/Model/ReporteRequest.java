@@ -3,7 +3,10 @@ package com.livingnet.back.Model;
 import java.util.Date;
 
 
-//Clase generada para los filtros en las solicitudes de reportes.
+/**
+ * Modelo de solicitud para aplicar filtros en las consultas de reportes.
+ * Incluye parámetros de paginación y criterios de filtro.
+ */
 public class ReporteRequest {
     
     // Entero para filtrar la cantidad de datos que se envían en el getReportesFiltrado de la clase ReportesDAO

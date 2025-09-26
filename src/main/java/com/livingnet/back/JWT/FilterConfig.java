@@ -4,8 +4,10 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-// clase de configuración de filtros, 
-
+/**
+ * Clase de configuración para filtros JWT.
+ * Configura el registro del filtro JWT para proteger ciertas rutas.
+ */
 @Configuration
 public class FilterConfig {
 
@@ -17,7 +19,11 @@ public class FilterConfig {
     public static String direccionUsers = "/users/*";
     public static String direccionReporteVacio = "/generate/*";
 
-    // bean para registrar el filtro
+    /**
+     * Bean para registrar el filtro JWT.
+     * @param jwtFilter El filtro JWT a registrar.
+     * @return El FilterRegistrationBean configurado.
+     */
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(JwtFilter jwtFilter) {
         FilterRegistrationBean<JwtFilter> registrationBean = new FilterRegistrationBean<>();

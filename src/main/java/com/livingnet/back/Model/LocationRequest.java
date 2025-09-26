@@ -1,6 +1,10 @@
 package com.livingnet.back.Model;
 
 
+/**
+ * Modelo de solicitud para ubicación.
+ * Contiene latitud y longitud como strings.
+ */
 public class LocationRequest {
 
     private String latitud;

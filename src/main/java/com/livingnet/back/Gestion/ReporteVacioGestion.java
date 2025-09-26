@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * Clase de gestión para reportes vacíos.
+ * Maneja la lógica de negocio para la creación, obtención, actualización y eliminación de reportes vacíos.
+ */
 @Service
 public class ReporteVacioGestion {
 
@@ -21,15 +25,31 @@ public class ReporteVacioGestion {
     @Autowired
     private UsuarioDAO usuarioDAO;
 
+    /**
+     * Genera un reporte vacío para un usuario en una ubicación específica.
+     * @param idUsuario El ID del usuario.
+     * @param cuerpo El LocationRequest con latitud y longitud.
+     * @return El ReporteVacioModel creado.
+     */
     public ReporteVacioModel generarReporteVacio(Long idUsuario, LocationRequest cuerpo) {
         UsuarioModel user  = usuarioDAO.getUsuarioPorId(idUsuario);
         return reporteVacioDAO.createReporte(idUsuario, cuerpo, user);
     }
 
+    /**
+     * Obtiene el reporte vacío asociado a un usuario.
+     * @param idUsuario El ID del usuario.
+     * @return El ReporteVacioModel correspondiente.
+     */
     public ReporteVacioModel getReporteVacio(Long idUsuario) {
         return reporteVacioDAO.getReporteVacio(idUsuario);
     }
 
+    /**
+     * Elimina el reporte vacío de un usuario y su imagen asociada si existe.
+     * @param idUsuario El ID del usuario.
+     * @return true si se eliminó correctamente, false en caso contrario.
+     */
     public boolean eliminarReporteVacio(Long idUsuario) {
         // eliminar imagen asociada
         ReporteVacioModel rvm = reporteVacioDAO.getReporteVacio(idUsuario);
@@ -42,6 +62,13 @@ public class ReporteVacioGestion {
         return reporteVacioDAO.deleteReporteVacio(idUsuario);
     }
 
+    /**
+     * Actualiza un reporte vacío con los nuevos datos proporcionados.
+     * @param rpm El ReporteVacioModel con los datos actualizados.
+     * @param idUsuario El ID del usuario.
+     * @param uploaded La URL de la imagen subida.
+     * @return El ReporteVacioModel actualizado.
+     */
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
 
         if ((rpm.getFoto_url() != null && rpm.getFoto_url() != "" )&&( uploaded != null && uploaded != "")) {// sirve para eliminar la imagen si esta se cambia

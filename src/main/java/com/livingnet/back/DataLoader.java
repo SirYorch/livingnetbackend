@@ -1,6 +1,11 @@
 //Clase creada para el ingreso masivo de datos para pruebas de filtraje.
 
-// package com.livingnet.back;
+/**
+ * Clase para cargar datos masivos de prueba en la aplicación.
+ * Implementa CommandLineRunner para ejecutar la carga al inicio de la aplicación.
+ * Nota: El código está comentado y no se ejecuta actualmente.
+ */
+//// package com.livingnet.back;
 
 // import java.util.Date;
 // import java.util.Random;

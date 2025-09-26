@@ -7,9 +7,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-//clase de modelo de usuario, aqui solo guardamos datos correo contraseña
-
-// sirve para la persistencia en base de datos, y funcionamiento de validaciones con rol y jwt.
+/**
+ * Entidad JPA que representa un usuario.
+ * Mapea a la tabla 'usuarios' en la base de datos.
+ * Incluye roles para validaciones y JWT.
+ */
 @Entity
 @Table(name = "usuarios")
 public class UsuarioModel {

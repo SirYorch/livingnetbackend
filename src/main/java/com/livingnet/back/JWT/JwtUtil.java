@@ -12,8 +12,14 @@ import com.livingnet.back.Model.UsuarioModel;
 import java.util.Date;
 import java.util.Map;
 
-// clase para generacion y parseo de tokens JWT
+/**
+ * Utilidad para la generación y parseo de tokens JWT.
+ * Maneja la creación de tokens basados en roles de usuario y la validación de tokens recibidos.
+ */
 public class JwtUtil {
+    /**
+     * Constructor por defecto de JwtUtil.
+     */
     public JwtUtil() {
 
     }
@@ -24,7 +30,12 @@ public class JwtUtil {
 );
 
 
-    //clase para generación del token
+    /**
+     * Genera un token JWT para un usuario específico.
+     * El tiempo de expiración varía según el rol del usuario.
+     * @param user El modelo de usuario para el cual generar el token.
+     * @return El token JWT generado como string.
+     */
     public static String generateToken(UsuarioModel user) {
         Map<String, Object> commonHeaders = Map.of("alg", "HS256", "typ", "JWT"); // encriptación
         int tiempoRol = 0;
@@ -51,7 +62,12 @@ public class JwtUtil {
             .compact();
     }
 
-    //clase para validacion del usuarios utilizando el token jwt que se envía en el header de la solicitud http
+    /**
+     * Parsea y valida un token JWT.
+     * Verifica la firma, expiración y obtiene los claims.
+     * @param jwt El token JWT a parsear.
+     * @return Los claims del token si es válido, null si es inválido.
+     */
     public static Claims parseToken(String jwt) {
         try {
             return Jwts.parser()
@@ -66,7 +82,11 @@ public class JwtUtil {
         }
     }
 
-    // micrométodo para sacar el usuario de token parseado
+    /**
+     * Extrae el nombre de usuario (subject) de un token JWT.
+     * @param token El token JWT del cual extraer el username.
+     * @return El username si el token es válido, null en caso contrario.
+     */
     public String extractUsername(String token) {
         Claims claims = parseToken(token);
         if (claims != null) {

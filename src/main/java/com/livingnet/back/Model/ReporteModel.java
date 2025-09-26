@@ -15,10 +15,11 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-// clase de reportes, la tabla en db se llama reportes,
-// contiene persistencia.
-
-
+/**
+ * Entidad JPA que representa un reporte.
+ * Mapea a la tabla 'reportes' en la base de datos.
+ * Incluye listener para convertir strings a mayúsculas.
+ */
 @Entity
 @Table(name = "reportes")
 @EntityListeners(UpperCaseListener.class)

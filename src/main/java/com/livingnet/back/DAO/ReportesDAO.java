@@ -17,7 +17,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
-// clase de acceso a datos, maneja la persistencia de reportes
+/**
+ * Clase de acceso a datos para reportes.
+ * Maneja la persistencia de reportes en la base de datos utilizando JPA.
+ */
 @Repository
 public class ReportesDAO {
     
@@ -25,7 +28,10 @@ public class ReportesDAO {
     private EntityManager em;
 
 
-    // metodo que devuelve todos los reportes en forma de lista
+    /**
+     * Devuelve una lista con todos los reportes almacenados en la base de datos.
+     * @return Lista de objetos ReporteModel, o null si ocurre un error.
+     */
     public List<ReporteModel> findAll() {
          try {
             return em.createQuery("SELECT r FROM ReporteModel r", ReporteModel.class)
@@ -35,14 +41,22 @@ public class ReportesDAO {
         }
     }
 
-    // método que devuelve un reporte, sirve para generar reportes en la base de datos.
+    /**
+     * Agrega un nuevo reporte a la base de datos.
+     * @param reporte El objeto ReporteModel a persistir.
+     * @return El reporte persistido.
+     */
     @Transactional
     public ReporteModel addReporte(ReporteModel reporte) {
         em.persist(reporte);
         return reporte;
     }
 
-    //método para eliminar reportes, devuelve un booleano si el reporte se elimina o no
+    /**
+     * Elimina un reporte de la base de datos por su ID.
+     * @param id El ID del reporte a eliminar.
+     * @return true si el reporte fue eliminado, false en caso contrario.
+     */
     @Transactional
     public boolean deleteReporte(Long id) {
         
@@ -51,7 +65,11 @@ public class ReportesDAO {
                 .executeUpdate() > 0;
     }
 
-    //método para actualizar reporte realiza un merge en la base de datos, utiliza el id, aunque de forma implicita
+    /**
+     * Actualiza un reporte existente en la base de datos.
+     * @param reporte El objeto ReporteModel con los datos actualizados.
+     * @return El reporte actualizado.
+     */
     @Transactional
     public ReporteModel updateReporte(ReporteModel reporte) {
 
@@ -61,7 +79,11 @@ public class ReportesDAO {
 
 
 
-    // método para eliminar imagenes, las imagenes que se encuentran en reportes utilizando el url?reportes, sirve para cuando se elimina un reporte, se elimine tambien su imagen.
+    /**
+     * Elimina la imagen asociada a un reporte por su ID.
+     * @param id El ID del reporte cuya imagen se desea eliminar.
+     * @return true si la imagen fue eliminada, false en caso contrario.
+     */
     public Boolean deleteImagen(Long id) {
         ReporteModel reporte = em.find(ReporteModel.class, id);
         if (reporte != null && reporte.getFoto_url() != null && !reporte.getFoto_url().isEmpty()) {
@@ -74,7 +96,13 @@ public class ReportesDAO {
         return false;
     }
 
-    // Método auxiliar para construir el JPQL y setear parámetros
+    /**
+     * Método auxiliar para construir consultas JPQL con filtros y parámetros.
+     * @param request El objeto ReporteRequest con los filtros.
+     * @param baseQuery La consulta base JPQL.
+     * @param resultClass La clase del resultado de la consulta.
+     * @return La consulta TypedQuery configurada.
+     */
     private <T> TypedQuery<T> buildQuery(ReporteRequest request, String baseQuery, Class<T> resultClass) {
         StringBuilder jpql = new StringBuilder(baseQuery);
 
@@ -157,7 +185,11 @@ public class ReportesDAO {
         return query;
     }
 
-    // Método para contar reportes tomando en cuenta los filtros aplicados
+    /**
+     * Cuenta el número de reportes que coinciden con los filtros aplicados.
+     * @param request El objeto ReporteRequest con los filtros.
+     * @return El número de reportes que coinciden.
+     */
     public Long getCantidadReportes(ReporteRequest request) {
         TypedQuery<Long> query = buildQuery(
             request,
@@ -167,7 +199,11 @@ public class ReportesDAO {
         return query.getSingleResult();
     }
 
-    // Método para obtener reportes filtrados, este utiliza paginación para noo enviar muchos datos por solicitud
+    /**
+     * Obtiene una lista de reportes filtrados con paginación.
+     * @param request El objeto ReporteRequest con los filtros y parámetros de paginación.
+     * @return Lista de reportes filtrados.
+     */
     public List<ReporteModel> getReportesFiltrado(ReporteRequest request) {
         TypedQuery<ReporteModel> query = buildQuery(
             request,
@@ -185,13 +221,21 @@ public class ReportesDAO {
         return query.getResultList();
     }
 
-    // método genérico para obtener valores distintos de un campo
+    /**
+     * Obtiene los valores distintos de un campo específico en los reportes.
+     * @param field El nombre del campo.
+     * @return Lista de valores distintos.
+     */
     public List<String> getDistinctValues(String field) {
         String jpql = "SELECT DISTINCT r." + field + " FROM ReporteModel r WHERE r." + field + " IS NOT NULL";
         return em.createQuery(jpql, String.class).getResultList();
     }
 
-    // método para saber si existe algún reporte con la imagen, sirve para que si se sube una imagen, pero no se crea un reporte, la imagen se elimine por si sola, evitando tener basura en el almacenamiento. se usa con triggers
+    /**
+     * Verifica si existe algún reporte asociado a una imagen específica.
+     * @param filePath La ruta del archivo de la imagen.
+     * @return true si existe al menos un reporte con esa imagen, false en caso contrario.
+     */
     public boolean checkImageExist(String filePath) {
         Long count = em.createQuery(
             "SELECT COUNT(r) FROM ReporteModel r WHERE r.foto_url = :filePath", Long.class)
@@ -200,12 +244,21 @@ public class ReportesDAO {
         return count > 0;
     }
 
-    //metodo que devuelve un booleano de si la imagen existe o no
+    /**
+     * Verifica si un archivo de imagen existe en el sistema de archivos.
+     * @param path La ruta del archivo.
+     * @return true si el archivo existe, false en caso contrario.
+     */
     public boolean checkImage(String path) {
         File file = new File(ImageProcessing.UPLOAD_DIR + path);
         return file.exists();
     }
 
+    /**
+     * Obtiene un reporte por su ID.
+     * @param id El ID del reporte.
+     * @return El objeto ReporteModel correspondiente, o null si no se encuentra.
+     */
     public ReporteModel getReporteById(long id) {
          try {
             return em.createQuery("SELECT r FROM ReporteModel r WHERE id = :id", ReporteModel.class)

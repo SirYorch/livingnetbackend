@@ -11,20 +11,36 @@ import java.util.List;
 import java.util.Optional;
 
 //clase de acceso a datos de usuarios, maneja la persistencia
+/**
+ * Clase de acceso a datos para usuarios.
+ * Maneja la persistencia de usuarios en la base de datos utilizando JPA.
+ */
 @Repository
 public class UsuarioDAO {
 
+    /**
+     * EntityManager para realizar operaciones de persistencia.
+     */
     @PersistenceContext // entidad para realizar transacciones jpa
     private EntityManager em;
 
 
-    //metodo para buscar usuarios por el id, 
+    /**
+     * Busca un usuario por su ID.
+     * @param id El ID del usuario.
+     * @return Un Optional con el UsuarioModel si se encuentra, vacío en caso contrario.
+     */
     public Optional<UsuarioModel> buscarPorId(Long id) {
         UsuarioModel u = em.find(UsuarioModel.class, id);
         return Optional.ofNullable(u);
     }
 
-    //metodos para buscar usuarios por email y password, sirve para las validación de credenciales en el inicio de sesión
+    /**
+     * Busca un usuario por email y contraseña para validación de credenciales.
+     * @param mail El email del usuario.
+     * @param password La contraseña del usuario.
+     * @return El UsuarioModel si las credenciales son correctas, null en caso contrario.
+     */
     public UsuarioModel buscarPorEmailYPassword(String mail, String password) {
         try {
             return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail AND u.password = :password", UsuarioModel.class)
@@ -36,13 +52,20 @@ public class UsuarioDAO {
         }
     }
 
-    //metodo listar usuarios, sirve para listar todos los usuarios y que se conozcan usuarios y permisos de cada uno.
+    /**
+     * Obtiene una lista de todos los usuarios registrados.
+     * @return Lista de UsuarioModel.
+     */
     public List<UsuarioModel> getUsuarios() {
         return em.createQuery("SELECT u FROM UsuarioModel u", UsuarioModel.class)
                  .getResultList();
     }
 
-    // metodo para guardar usuarios, utilizando jpa.
+    /**
+     * Guarda un nuevo usuario en la base de datos.
+     * @param usuario El UsuarioModel a guardar.
+     * @return El usuario guardado.
+     */
     @Transactional
     public UsuarioModel save(UsuarioModel usuario) {
         System.out.println(usuario.getRol()+" "+usuario.getMail()+" "+usuario.getPassword()+" "+ usuario.getId());
@@ -50,13 +73,21 @@ public class UsuarioDAO {
         return usuario;
     }
 
-    // método para actualizar usuario, es utiliza la id de forma implicita.
+    /**
+     * Actualiza un usuario existente en la base de datos.
+     * @param usuario El UsuarioModel con los datos actualizados.
+     * @return El usuario actualizado.
+     */
     @Transactional
     public UsuarioModel updateUsuario(UsuarioModel usuario) {
         return em.merge(usuario);
     }
 
-    // método para eliminar usuarios, utilizando el id, no se permite que un usuario se elimine a si mismo, revisar jwtFilter
+    /**
+     * Elimina un usuario de la base de datos por su ID.
+     * @param id El ID del usuario a eliminar.
+     * @return true si el usuario fue eliminado, false en caso contrario.
+     */
     @Transactional
     public boolean deleteUsuario(Long id) {
          return em.createQuery("DELETE FROM UsuarioModel u WHERE u.id = :id")
@@ -64,7 +95,11 @@ public class UsuarioDAO {
                 .executeUpdate() > 0;
     }
 
-    //metodo get usuario por MAIl sirve para obtener el usuario utilizando solo el mail, sirve para la validacion en jwtFilter
+    /**
+     * Obtiene un usuario por su email.
+     * @param mail El email del usuario.
+     * @return El UsuarioModel correspondiente, o null si no se encuentra.
+     */
     public UsuarioModel getUsuarioPorMail(String mail) {
         try {
             return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail", UsuarioModel.class)
@@ -83,6 +118,11 @@ public class UsuarioDAO {
         }
     }
 
+    /**
+     * Obtiene un usuario por su ID.
+     * @param id El ID del usuario.
+     * @return El UsuarioModel correspondiente, o null si no se encuentra.
+     */
     public UsuarioModel getUsuarioPorId(Long id) {
         try {
             return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.id = :id", UsuarioModel.class)

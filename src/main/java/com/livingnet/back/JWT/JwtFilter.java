@@ -14,7 +14,10 @@ import org.springframework.stereotype.Component;
 import com.livingnet.back.Gestion.UsuarioGestion;
 import com.livingnet.back.Model.UsuarioModel;
 
-//clase de filtro, recibe todas las solicitudes http que estan configuradas según la clase FilterCOnfig
+/**
+ * Filtro JWT para autenticación y autorización de solicitudes HTTP.
+ * Intercepta las solicitudes configuradas en FilterConfig para validar tokens JWT y permisos de usuario.
+ */
 @Component
 public class JwtFilter implements Filter {
 
@@ -31,7 +34,14 @@ public class JwtFilter implements Filter {
     }
 
 
-    // método sobreescrito, contiene la lógica del token jwt en cada validación
+    /**
+     * Procesa cada solicitud HTTP, extrayendo y validando el token JWT, y verificando permisos.
+     * @param request La solicitud Servlet.
+     * @param response La respuesta Servlet.
+     * @param chain La cadena de filtros.
+     * @throws IOException Si ocurre un error de I/O.
+     * @throws ServletException Si ocurre un error de servlet.
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
@@ -67,7 +77,12 @@ public class JwtFilter implements Filter {
     }
 
 
-    //método para validar permisos en las solicitudes http, por el momento, edición es solo permitida por administradores.
+    /**
+     * Valida los permisos del usuario para la solicitud HTTP actual.
+     * @param req La solicitud HTTP.
+     * @param username El nombre de usuario extraído del token.
+     * @throws Exception Si no tiene permisos o la acción es inválida.
+     */
     private void ValidatePermissions(HttpServletRequest req, String username) throws Exception {
 
         UsuarioModel user = usuarioGestion.getUsuarioPorMail(username);
@@ -135,6 +150,12 @@ public class JwtFilter implements Filter {
     
     }
 
+    /**
+     * Valida si el ID del usuario en la URL coincide con el ID del usuario autenticado.
+     * @param req La solicitud HTTP.
+     * @param user El modelo de usuario.
+     * @return true si coinciden, false en caso contrario.
+     */
     private boolean validateParity(HttpServletRequest req, UsuarioModel user ){
         String path = req.getRequestURI();   
         String userIdStr = path.substring(path.lastIndexOf("/") + 1);

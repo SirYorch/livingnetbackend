@@ -5,8 +5,16 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.lang.reflect.Field;
 
+/**
+ * Listener JPA que convierte campos de tipo String a mayúsculas antes de persistir o actualizar entidades.
+ */
 public class UpperCaseListener {
 
+    /**
+     * Método ejecutado antes de persistir o actualizar una entidad.
+     * Convierte todos los campos String a mayúsculas.
+     * @param entity La entidad a procesar.
+     */
     @PrePersist
     @PreUpdate
     public void beforeSave(Object entity) {

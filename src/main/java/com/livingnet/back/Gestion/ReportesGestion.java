@@ -14,8 +14,10 @@ import com.livingnet.back.Model.ReporteModel;
 import com.livingnet.back.Model.ReporteRequest;
 import com.livingnet.back.Model.ReporteVacioModel;
 
-// Clase de gestión, util en caso de escalar, para manejar lógica de negocio
-// sirve principalmente para transicionar entre servicio persistencia, solo se comentan los métodos con lógica interna
+/**
+ * Clase de gestión para reportes.
+ * Maneja la lógica de negocio relacionada con reportes, actuando como intermediario entre los servicios y la capa de datos.
+ */
 @Service
 public class ReportesGestion {
 
@@ -28,15 +30,28 @@ public class ReportesGestion {
         this.reportesDAO = reportesDAO;
     }
 
+    /**
+     * Obtiene una lista de todos los reportes.
+     * @return Lista de ReporteModel.
+     */
     public List<ReporteModel> getReportes() {
         return reportesDAO.findAll();
     }
 
+    /**
+     * Agrega un nuevo reporte.
+     * @param reporte El ReporteModel a agregar.
+     * @return El reporte agregado.
+     */
      public ReporteModel addReporte(ReporteModel reporte) {
         return reportesDAO.addReporte(reporte);
     }
 
-    //  devuelve un map de si se elimina el reporte, y la imagen que le corresponde, sirve para permitir que no se almacene informacion basura
+    /**
+     * Elimina un reporte y su imagen asociada.
+     * @param id El ID del reporte a eliminar.
+     * @return Un mapa con el estado de eliminación del reporte y la imagen.
+     */
     public Map<String,Boolean> deleteReporte(Long id) {
         Map<String, Boolean> response = new HashMap<>();
         response.put("reporte", reportesDAO.deleteImagen(id));
@@ -45,6 +60,11 @@ public class ReportesGestion {
         return response;
     }
 
+    /**
+     * Actualiza un reporte existente con los nuevos datos proporcionados.
+     * @param reporte El ReporteModel con los datos actualizados.
+     * @return El reporte actualizado.
+     */
     public ReporteModel updateReporte(ReporteModel reporte) {
         // get reporte by id
         ReporteModel existingReporte = reportesDAO.getReporteById(reporte.getId());
@@ -78,16 +98,29 @@ public class ReportesGestion {
         return reportesDAO.updateReporte(reporte);    
     }
 
+    /**
+     * Obtiene una lista de reportes filtrados según los criterios especificados.
+     * @param rq El ReporteRequest con los filtros.
+     * @return Lista de reportes filtrados.
+     */
     public List<ReporteModel> getReportesFiltros(ReporteRequest rq) {
         return reportesDAO.getReportesFiltrado(rq);
     }
 
+    /**
+     * Obtiene la cantidad de reportes que coinciden con los filtros aplicados.
+     * @param body El ReporteRequest con los filtros.
+     * @return La cantidad de reportes.
+     */
     public Long getCantidadReportes(ReporteRequest body) {
         return reportesDAO.getCantidadReportes(body);
     }
 
 
-    // método para obtener un hashmap de los desplegables, sirve para poder autorellenar campos en el frontend, se devuelven los valores distintos de cada categoría.
+    /**
+     * Obtiene un mapa con los valores distintos para los campos desplegables.
+     * @return Mapa con listas de valores únicos para cada categoría.
+     */
     public Map<String, List<String>> getDesplegables() {
         Map<String, List<String>> desplegables = new HashMap<>();
 
@@ -103,14 +136,31 @@ public class ReportesGestion {
         return desplegables;
     }
 
-    public boolean checkImageExist(String filePath) {        
+    /**
+     * Verifica si existe un reporte asociado a la imagen especificada.
+     * @param filePath La ruta del archivo de la imagen.
+     * @return true si existe, false en caso contrario.
+     */
+    public boolean checkImageExist(String filePath) {
         return reportesDAO.checkImageExist(filePath);
     }
 
+    /**
+     * Verifica si la imagen existe en el sistema de archivos.
+     * @param foto_url La URL de la foto.
+     * @return true si existe, false en caso contrario.
+     */
     public boolean checkImage(String foto_url) {
         return reportesDAO.checkImage(foto_url);
     }
 
+    /**
+     * Genera un reporte completo a partir de un reporte vacío y los datos proporcionados.
+     * @param rpm El ReporteVacioModel con datos adicionales.
+     * @param idUsuario El ID del usuario.
+     * @param reporte El ReporteModel base.
+     * @return El reporte generado y guardado.
+     */
     public ReporteModel generarReporte(ReporteVacioModel rpm, Long idUsuario, ReporteModel reporte) {
 
         ReporteVacioModel rp = reporteVacioDAO.getReporteVacio(idUsuario);
