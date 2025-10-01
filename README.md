@@ -1,8 +1,8 @@
 # Documentación del Backend API - Livingnet
 
 **Versión:** 2.0.0  
-**Fecha:** 01-10-2025
-**Autores:** Jorge Cueva, Michael Lata  
+**Fecha:** [01-10-2025]  
+**Autores:** Jorge Cueva
 
 ## 1. Introducción
 
@@ -10,7 +10,45 @@ El presente documento describe la documentación completa del backend API desarr
 
 La API soporta operaciones CRUD, filtrado dinámico, paginación, carga de imágenes, autenticación de usuarios, y validación de datos. Está diseñada para ser escalable y mantenible, siguiendo patrones de arquitectura DAO, Gestión (lógica de negocio), y Servicios (controladores REST).
 
-## 2. Descripción
+
+## 2. Despligue
+
+Con respecto al despliegue del backend, hecho en el servidor instalado dentro de la empresa, y mediante conexión ssh se realiza lo siguiente.
+
+### 2.1 Conexión ssh
+
+#### las credenciales serán dadas en la misma empresa.
+
+#### comando apra ir a la carpeta con los archivos.
+ cd BackendApp 
+#### en caso de actualizaciones
+ cd back
+ git pull origin main
+ cd ..
+#### para desplegar 
+sudo docker compose down
+sudo docker compose build
+sudo docker compose up -d
+
+#### Para acceder a la base de datos
+psql -d livingnet -U postgres -h localhost
+#### Para ver logs del backend en caso ed errores
+sudo docker logs backend
+
+#### para finalizar se agrega una aplicación para generar un archivo csv con todos los reportes, en caso de emergencia. 
+
+python3 generatecsv.py
+
+#### y un comando para copiar las carpetas con imagenes y firmas.
+
+#### Copiar imágenes y firmas por SSH
+scp -r livingnet@172.16.0.10:~/BackendApp/back/uploads ./imagenes
+
+#### Copiar csv de reportes por SSH
+
+scp livingnet@172.16.0.10:~/reportes.csv ./reportes.csv
+
+## 3. Descripción
 
 El backend es una aplicación Spring Boot que gestiona reportes de actividades laborales para técnicos de Livingnet. Permite crear reportes vacíos (iniciales) que luego se completan, convirtiéndose en reportes finales. Incluye autenticación JWT, manejo de imágenes (fotos y firmas), y datos de ubicación.
 
@@ -21,7 +59,7 @@ Tecnologías principales:
 - **JWT**: Autenticación y autorización.
 - **Multipart**: Carga de archivos (imágenes).
 
-## 3. Organización
+## 4. Organización
 
 El proyecto sigue una arquitectura en capas para facilitar el mantenimiento:
 - **DAO (Data Access Object)**: Acceso directo a la base de datos, consultas SQL y operaciones de persistencia.
@@ -31,9 +69,9 @@ El proyecto sigue una arquitectura en capas para facilitar el mantenimiento:
 - **JWT**: Manejo de tokens para autenticación.
 - **Otros**: Utilidades como procesamiento de imágenes y manejo de excepciones.
 
-## 4. Clases Modelo
+## 5. Clases Modelo
 
-### 4.1 ReporteModel
+### 5.1 ReporteModel
 Clase persistida en la tabla `reportes`. Representa reportes completos de actividades laborales.
 
 **Atributos principales:**
@@ -47,7 +85,7 @@ Clase persistida en la tabla `reportes`. Representa reportes completos de activi
 - `firmaUrl` (String): URL de la firma.
 - Relación: `usuario` (UsuarioModel, opcional).
 
-### 4.2 ReporteVacioModel
+### 5.2 ReporteVacioModel
 Clase persistida en la tabla `reportes_vacios`. Similar a ReporteModel pero con todos los campos nulos por defecto, permitiendo reportes incompletos. Incluye datos de ubicación y cliente adicionales.
 
 **Atributos adicionales:**
@@ -55,7 +93,7 @@ Clase persistida en la tabla `reportes_vacios`. Similar a ReporteModel pero con 
 - Ubicación: `latitudInicio`, `longitudInicio`, `latitudFin`, `longitudFin` (String).
 - Cliente: `nombreCliente`, `cedulaCliente`, `numeroContrato`, `telefonos`, `correo`, `plan`, `coordenadas`, `valorCobrar`, `firmaUrl` (String).
 
-### 4.3 UsuarioModel
+### 5.3 UsuarioModel
 Clase persistida en la tabla `usuarios`. Gestiona credenciales y roles.
 
 **Atributos:**
@@ -64,25 +102,25 @@ Clase persistida en la tabla `usuarios`. Gestiona credenciales y roles.
 - `password` (String): Contraseña (no nula).
 - `rol` (String): Rol del usuario (no nulo).
 
-### 4.4 UsuarioRequest
+### 5.4 UsuarioRequest
 Clase de solicitud para creación/modificación de usuarios (no persistida). Incluye confirmación de contraseña.
 
 **Atributos:**
 - `id`, `mail`, `password`, `rol`, `confirmPassword` (String).
 
-### 4.5 UsuarioSend
+### 5.5 UsuarioSend
 Clase de respuesta para usuarios (no persistida). Excluye contraseña.
 
 **Atributos:**
 - `id`, `mail`, `rol` (String/Long).
 
-### 4.6 LocationRequest
+### 5.6 LocationRequest
 Clase de solicitud para ubicación (no persistida).
 
 **Atributos:**
 - `latitud`, `longitud` (String).
 
-### 4.7 ReporteRequest
+### 5.7 ReporteRequest
 Clase de solicitud para filtrado y paginación (no persistida).
 
 **Atributos:**
@@ -91,9 +129,9 @@ Clase de solicitud para filtrado y paginación (no persistida).
 - Parámetros de filtro: `fecha`, `agencia`, etc. (Date/String).
 - `retraso` (boolean): Filtrado por retraso.
 
-## 5. Clases DAO
+## 6. Clases DAO
 
-### 5.1 ReportesDAO
+### 6.1 ReportesDAO
 Acceso a datos para ReporteModel.
 
 **Métodos principales:**
@@ -106,7 +144,7 @@ Acceso a datos para ReporteModel.
 - `deleteImagen(Long id)`: Elimina imagen asociada.
 - Métodos para desplegables: `getAgencias()`, etc.
 
-### 5.2 ReporteVacioDAO
+### 6.2 ReporteVacioDAO
 Acceso a datos para ReporteVacioModel.
 
 **Métodos principales:**
@@ -121,7 +159,7 @@ Acceso a datos para ReporteVacioModel.
 - `deleteReporteVacioSinUsuario(Long)`: Elimina sin usuario.
 - `actualizarReporteVacioSinUsuario(ReporteVacioModel)`: Actualiza sin usuario.
 
-### 5.3 UsuarioDAO
+### 6.3 UsuarioDAO
 Acceso a datos para UsuarioModel.
 
 **Métodos principales:**
@@ -132,9 +170,9 @@ Acceso a datos para UsuarioModel.
 - `updateUsuario(UsuarioModel)`: Actualiza.
 - `deleteUsuario(Long)`: Elimina.
 
-## 6. Clases Gestión
+## 7. Clases Gestión
 
-### 6.1 ReportesGestion
+### 7.1 ReportesGestion
 Lógica de negocio para ReporteModel.
 
 **Métodos principales:**
@@ -147,7 +185,7 @@ Lógica de negocio para ReporteModel.
 - `getDesplegables()`: Mapa de valores únicos.
 - `generarReporte(ReporteVacioModel, Long, ReporteModel)`: Convierte vacío a completo.
 
-### 6.2 ReporteVacioGestion
+### 7.2 ReporteVacioGestion
 Lógica de negocio para ReporteVacioModel.
 
 **Métodos principales:**
@@ -160,7 +198,7 @@ Lógica de negocio para ReporteVacioModel.
 - `eliminarReporteSinUsuario(Long)`: Elimina sin usuario.
 - `editReport(ReporteVacioModel)`: Edita.
 
-### 6.3 UsuarioGestion
+### 7.3 UsuarioGestion
 Lógica de negocio para UsuarioModel.
 
 **Métodos principales:**
@@ -171,16 +209,16 @@ Lógica de negocio para UsuarioModel.
 - `updateUsuario(UsuarioModel)`: Actualiza.
 - `deleteUsuario(Long)`: Elimina.
 
-## 7. Clases Servicios
+## 8. Clases Servicios
 
-### 7.1 LoginService
+### 8.1 LoginService
 Autenticación de usuarios.
 
 **Ruta base:** `/`
 **Métodos:**
 - `POST /login`: Valida credenciales y devuelve JWT.
 
-### 7.2 ReportesService
+### 8.2 ReportesService
 Gestión de reportes completos.
 
 **Ruta base:** `/reports`
@@ -193,7 +231,7 @@ Gestión de reportes completos.
 - `DELETE /{id}`: Elimina.
 - `GET /deployables`: Valores únicos.
 
-### 7.3 ReporteVacioService
+### 8.3 ReporteVacioService
 Gestión de reportes vacíos.
 
 **Ruta base:** `/generate`
@@ -209,7 +247,7 @@ Gestión de reportes vacíos.
 - `PUT /{idUsuario}`: Actualiza con imagen.
 - `POST /reports/{idUsuario}`: Convierte vacío a reporte completo con imagen.
 
-### 7.4 UsuariosService
+### 8.4 UsuariosService
 Gestión de usuarios.
 
 **Ruta base:** `/users`
@@ -219,14 +257,14 @@ Gestión de usuarios.
 - `PUT /`: Actualiza.
 - `DELETE /{id}`: Elimina.
 
-### 7.5 Validation
+### 8.5 Validation
 Validación de JWT.
 
 **Ruta base:** `/validate`
 **Métodos:**
 - `GET /`: Valida token.
 
-## 8. Clases JWT
+## 9. Clases JWT
 
 - **JwtUtil**: Genera y valida tokens.
 - **JwtFilter**: Filtro para solicitudes, verifica JWT.
@@ -234,7 +272,7 @@ Validación de JWT.
 - **WebConfig**: Configura CORS.
 - **UpperCaseListener**: Listener para convertir campos a mayúsculas.
 
-## 9. Otras Clases
+## 10. Otras Clases
 
 - **ImageProcessing**: Manejo de carga y eliminación de imágenes.
 - **GlobalExceptionHandler**: Manejo global de excepciones.
