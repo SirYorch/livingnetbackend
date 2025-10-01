@@ -1,7 +1,7 @@
 # Documentación del Backend API - Livingnet
 
 **Versión:** 2.0.0  
-**Fecha:** [Fecha actual]  
+**Fecha:** 01-10-2025
 **Autores:** Jorge Cueva, Michael Lata  
 
 ## 1. Introducción

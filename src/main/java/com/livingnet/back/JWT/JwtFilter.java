@@ -52,8 +52,8 @@ public class JwtFilter implements Filter {
         HttpServletResponse res = (HttpServletResponse) response;
 
         String authHeader = req.getHeader("Authorization");
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            
             String token = authHeader.substring(7);
             try {
                 String username = jwtUtil.extractUsername(token);
@@ -67,15 +67,15 @@ public class JwtFilter implements Filter {
                 chain.doFilter(request, response);
             } catch (Exception e) {
                 if(e.getMessage().equals(sinPermiso)){
-                    System.out.print("sin permiso");
+                    System.out.println("sin permiso");
                     res.sendError(403, e.getMessage());    
                 } else if(e.getMessage().equals(invalida)){
-                    System.out.print("invalida");
+                    System.out.println("invalida");
                     res.sendError(409, e.getMessage());    
                 } else if(e.getMessage().equals(tokenInvalido)){
                     res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token faltante");
                 }else{
-                    System.out.print(e);
+                    System.out.println(e);
                     res.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
                 }
             }
@@ -93,9 +93,9 @@ public class JwtFilter implements Filter {
      * @throws Exception Si no tiene permisos o la acción es inválida.
      */
     private void ValidatePermissions(HttpServletRequest req, String username) throws Exception {
-
         Optional<UsuarioModel> userOpt = usuarioGestion.getUsuarioPorMail(username);
         if(userOpt.isEmpty()){
+            System.out.println("usuario inexistente");
             throw new Exception(usuarioInexistente);
         }
 
@@ -103,9 +103,8 @@ public class JwtFilter implements Filter {
 
 
         //si método == usuarios, solo se puede hacer un get.
-        StringBuilder du = new StringBuilder(FilterConfig.direccionUsers); //String para usuarios
-        du.deleteCharAt(7);
-        du.deleteCharAt(6);
+        StringBuilder du = new StringBuilder(FilterConfig.direccionUsersRoot); //String para usuarios
+        
 
         //
         StringBuilder drv = new StringBuilder(FilterConfig.direccionReporteVacio); //String para reportesVacio
@@ -130,6 +129,7 @@ public class JwtFilter implements Filter {
                 return;
             }
 
+            
             if (!user.getRol().equals(UsuarioModel.ROL_ADMIN)) { //  si es distinto de get, y no es admin hay error
                 throw new Exception(this.sinPermiso);
             }
@@ -138,8 +138,8 @@ public class JwtFilter implements Filter {
 
                 if(validateParity(req, user)){ // si id coincide error
                     throw new Exception(this.invalida);
-                }
 
+            }
             }
         }
 

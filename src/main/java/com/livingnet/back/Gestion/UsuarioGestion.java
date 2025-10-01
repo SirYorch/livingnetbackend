@@ -3,6 +3,7 @@ package com.livingnet.back.Gestion;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.livingnet.back.DAO.UsuarioDAO;
@@ -17,6 +18,9 @@ import com.livingnet.back.Model.UsuarioModel;
 public class UsuarioGestion {
 
     private final UsuarioDAO usuarioDAO;
+    
+    @Autowired
+    private ReporteVacioGestion reporteVacioGestion;
 
     /**
      * Constructor de UsuarioGestion.
@@ -79,6 +83,8 @@ public class UsuarioGestion {
      * @return true si el usuario fue eliminado, false en caso contrario.
      */
     public boolean deleteUsuario(Long id) {
+        reporteVacioGestion.eliminarReporteVacio(id);
+
         return usuarioDAO.deleteUsuario(id);
     }
 

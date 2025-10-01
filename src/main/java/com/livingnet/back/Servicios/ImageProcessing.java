@@ -36,7 +36,7 @@ public class ImageProcessing {
 
 
 
-    // permite subir imagenes, serán guardadas la variable estática según upload DIR
+    // permite subir imagenes, serán guardadas la variable estática según uploFad DIR
     public String uploadImage(MultipartFile file) {
         try {
             // Crear carpeta si no existe
@@ -83,7 +83,8 @@ public class ImageProcessing {
     public ResponseEntity<byte[]> getImage(@PathVariable String file) {
         try {
             Path imgPath = new File(UPLOAD_IMG + file.toLowerCase()).toPath();
-            System.out.println(imgPath.toString());
+            
+            
 
             if (!Files.exists(imgPath)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -113,7 +114,7 @@ public class ImageProcessing {
     public ResponseEntity<byte[]> getSignature(@PathVariable String file) {
         try {
             Path imgPath = new File(UPLOAD_SIGN + file.toLowerCase()).toPath();
-            System.out.println(imgPath.toString());
+            
 
             if (!Files.exists(imgPath)) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
