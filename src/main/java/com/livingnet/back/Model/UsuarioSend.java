@@ -1,11 +1,18 @@
 package com.livingnet.back.Model;
 
-//clase creada para el envio de información a los usuarios, se omite el campo de contraseñas, para evitar problemas de fugas de datos.
+/**
+ * Clase creada para el envío de información a los usuarios.
+ * Se omite el campo de contraseñas, para evitar problemas de fugas de datos.
+ */
 public class UsuarioSend {
 
-
+    /** Correo electrónico del usuario. */
     private String mail;
+
+    /** Rol del usuario. */
     private String rol;
+
+    /** ID del usuario. */
     private Long id;
 
 

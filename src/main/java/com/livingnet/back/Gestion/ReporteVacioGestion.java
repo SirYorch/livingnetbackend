@@ -21,9 +21,24 @@ public class ReporteVacioGestion {
     @Autowired
     private ReporteVacioDAO reporteVacioDAO;
 
-
     @Autowired
     private UsuarioDAO usuarioDAO;
+
+    /**
+     * Constructor de ReporteVacioGestion.
+     * Inyecta las dependencias de ReporteVacioDAO y UsuarioDAO.
+     */
+    public ReporteVacioGestion() {
+    }
+
+    /**
+     * Genera un reporte vacío para que cualquier usuario lo pueda ver.
+     * @return El ReporteVacioModel creado.
+     */
+    public ReporteVacioModel generarReporteVacio(ReporteVacioModel cuerpo) {
+        
+        return reporteVacioDAO.createReporte(cuerpo);
+    }
 
     /**
      * Genera un reporte vacío para un usuario en una ubicación específica.
@@ -32,7 +47,7 @@ public class ReporteVacioGestion {
      * @return El ReporteVacioModel creado.
      */
     public ReporteVacioModel generarReporteVacio(Long idUsuario, LocationRequest cuerpo) {
-        UsuarioModel user  = usuarioDAO.getUsuarioPorId(idUsuario);
+        UsuarioModel user = usuarioDAO.buscarPorId(idUsuario).orElse(null);
         return reporteVacioDAO.createReporte(idUsuario, cuerpo, user);
     }
 
@@ -54,12 +69,23 @@ public class ReporteVacioGestion {
         // eliminar imagen asociada
         ReporteVacioModel rvm = reporteVacioDAO.getReporteVacio(idUsuario);
         if (rvm.getFoto_url() != null && rvm.getFoto_url() != "") {// sirve para eliminar la imagen si esta se cambia
-            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rvm.getFoto_url().toLowerCase());
-            if (file.exists()) {
-                file.delete();
-            }
+            ImageProcessing.deleteImagen(rvm.getFoto_url());
         }
         return reporteVacioDAO.deleteReporteVacio(idUsuario);
+    }
+
+    /**
+     * Elimina un reporte vacío por su ID y su imagen asociada si existe.
+     * @param idReporte El ID del reporte a eliminar.
+     * @return true si se eliminó correctamente, false en caso contrario.
+     */
+    public boolean eliminarReporte(Long idReporte) {
+        // eliminar imagen asociada
+        ReporteVacioModel rvm = reporteVacioDAO.getReporteVacioById(idReporte);
+        if (rvm.getFoto_url() != null && rvm.getFoto_url() != "") {// sirve para eliminar la imagen si esta se cambia
+            ImageProcessing.deleteImagen(rvm.getFoto_url());
+        }
+        return reporteVacioDAO.deleteReporteVacio(idReporte);
     }
 
     /**
@@ -72,10 +98,7 @@ public class ReporteVacioGestion {
     public ReporteVacioModel actualizarReporteVacio(ReporteVacioModel rpm, Long idUsuario,String uploaded) {
 
         if ((rpm.getFoto_url() != null && rpm.getFoto_url() != "" )&&( uploaded != null && uploaded != "")) {// sirve para eliminar la imagen si esta se cambia
-            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + rpm.getFoto_url().toLowerCase());
-            if (file.exists()) {
-                file.delete();
-            }
+            ImageProcessing.deleteImagen(rpm.getFoto_url());
         }
 
         ReporteVacioModel reporte = getReporteVacio(idUsuario);
@@ -112,6 +135,16 @@ public class ReporteVacioGestion {
         reporte.setConectores(rpm.getConectores());
         reporte.setCamara(rpm.getCamara());
 
+        // cliente
+        reporte.setNombreCliente(rpm.getNombreCliente());
+        reporte.setCedulaCliente(rpm.getCedulaCliente());
+        reporte.setNumeroContrato(rpm.getNumeroContrato());
+        reporte.setTelefonos(rpm.getTelefonos());
+        reporte.setCorreo(rpm.getCorreo());
+        reporte.setPlan(rpm.getPlan());
+        reporte.setCoordenadas(rpm.getCoordenadas());
+        reporte.setValorCobrar(rpm.getValorCobrar());
+
         if( uploaded != "" ){
             reporte.setFoto_url(uploaded);
         } else if (rpm.getFoto_url() != null && rpm.getFoto_url() != "") {
@@ -122,5 +155,37 @@ public class ReporteVacioGestion {
 
 
         return reporteVacioDAO.actualizarReporteVacio(reporte);
+    }
+
+    /**
+     * Asigna un reporte vacío a un usuario para que lo pueda llenar.
+     * @param idUsuario El ID del usuario.
+     * @param cuerpo El LocationRequest con latitud y longitud.
+     * @param idReporte El ID del reporte vacío.
+     * @return El ReporteVacioModel asignado.
+     */
+    public ReporteVacioModel assignarReporteVacio(Long idUsuario, LocationRequest cuerpo, Long idReporte) {
+        UsuarioModel user = usuarioDAO.buscarPorId(idUsuario).orElse(null);
+        return reporteVacioDAO.assignReporte(idReporte, cuerpo, user);
+    }
+
+    /**
+     * Elimina un reporte vacío sin usuario asociado.
+     * @param idReporte El ID del reporte a eliminar.
+     * @return true si se eliminó correctamente, false en caso contrario.
+     */
+    public boolean eliminarReporteSinUsuario(Long idReporte) {
+        return this.reporteVacioDAO.deleteReporteVacioSinUsuario(idReporte);
+    }
+
+    /**
+     * Edita un reporte vacío sin usuario asociado.
+     * @param cuerpo El ReporteVacioModel con los datos actualizados.
+     * @return El ReporteVacioModel editado.
+     */
+    public ReporteVacioModel editReport(ReporteVacioModel cuerpo) {
+
+
+        return this.reporteVacioDAO.actualizarReporteVacioSinUsuario(cuerpo);
     }
 }

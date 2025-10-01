@@ -2,17 +2,20 @@ package com.livingnet.back.Servicios;
 
 import com.livingnet.back.Gestion.ReporteVacioGestion;
 import com.livingnet.back.Gestion.ReportesGestion;
-// import com.livingnet.back.Gestion.ReportesGestion;
 import com.livingnet.back.Model.LocationRequest;
 import com.livingnet.back.Model.ReporteModel;
 import com.livingnet.back.Model.ReporteVacioModel;
 
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 
@@ -34,15 +37,50 @@ public class ReporteVacioService {
     public ReporteVacioModel getReporteVacio(@PathVariable Long idUsuario) {
         return reporteVacioGestion.getReporteVacio(idUsuario);
     }
+
+    // Generar un nuevo reporte vacío sin un usuario, para que todos lo puedan ver
+    @PutMapping("/update")
+    public ReporteVacioModel updateReport( 
+        @RequestBody ReporteVacioModel cuerpo
+        ) {
+            return reporteVacioGestion.editReport(cuerpo);
+    }
+    
+    // Generar un nuevo reporte vacío sin un usuario, para que todos lo puedan ver
+    @PostMapping("/assign/{idUsuario}/{idReporte}")
+    public ReporteVacioModel AssignJob( 
+        @RequestBody LocationRequest cuerpo, 
+        @PathVariable Long idUsuario,
+        @PathVariable Long idReporte
+        ) {
+        return reporteVacioGestion.assignarReporteVacio(idUsuario, cuerpo, idReporte);
+    }
+
+
+    // Generar un nuevo reporte vacío sin un usuario, para que todos lo puedan ver
+    @PostMapping
+    public ReporteVacioModel generarReporteVacioSinUsuario( @RequestBody ReporteVacioModel cuerpo) {
+        return reporteVacioGestion.generarReporteVacio(cuerpo);
+    }
+
+    @GetMapping("/empty")
+    public List<ReporteVacioModel> getMethodName() {
+        return reportesGestion.getReportesVacios();
+    }
     
 
     // Generar un nuevo reporte vacío para un usuario, agregando la hora del servidor en horaInicio
-       @PostMapping("/{idUsuario}")
+    @PostMapping("/{idUsuario}")
     public ReporteVacioModel generarReporteVacio(
         @RequestBody LocationRequest cuerpo, 
         @PathVariable Long idUsuario
         ) {
         return reporteVacioGestion.generarReporteVacio(idUsuario, cuerpo);
+    }
+    
+    @DeleteMapping("/report/{idReporte}")
+    public boolean eliminarReporte(@PathVariable Long idReporte){
+        return reporteVacioGestion.eliminarReporteSinUsuario(idReporte);
     }
 
     @DeleteMapping("/{idUsuario}")
@@ -69,20 +107,19 @@ public class ReporteVacioService {
     // Agregar un nuevo reporte con imagen subida en el mismo método
     @PostMapping(value = "/reports/{idUsuario}", consumes = {"multipart/form-data"})
     public ResponseEntity<ReporteModel> addReporteWithImage(
-            @RequestPart(value = "file", required = false) MultipartFile file,
-            @Valid @RequestPart("reporte") ReporteVacioModel reporte,
-            @PathVariable Long idUsuario) {
+        @RequestPart(value = "file", required = false) MultipartFile file,
+        @RequestPart(value = "signature", required = false) MultipartFile signature,
+        @Valid @RequestPart("reporte") ReporteVacioModel reporte,
+        @PathVariable Long idUsuario) {
     
-    // validacion de objetos
+            // validacion de objetos    
 
             String uploaded = "";
             ReporteModel rm = new ReporteModel();
+
             if (file != null && !file.isEmpty()) {
                 if(reporte.getFoto_url() != null && reporte.getFoto_url() != ""){// si ya habia una imagen, se elimina
-                    java.io.File oldfile = new java.io.File(ImageProcessing.UPLOAD_DIR + reporte.getFoto_url().toLowerCase());
-                    if (oldfile.exists()) {
-                        oldfile.delete();
-                    }
+                    ImageProcessing.deleteImagen(reporte.getFoto_url());
                 }
                 uploaded = procesamiento.uploadImage(file);
                 rm.setFoto_url(uploaded);    
@@ -90,6 +127,14 @@ public class ReporteVacioService {
                 rm.setFoto_url(reporte.getFoto_url());
             } else {
                 rm.setFoto_url(null);
+            }
+
+
+            if (signature != null && !signature.isEmpty()) {
+                uploaded = procesamiento.uploadSignature(signature);
+                rm.setFirmaUrl(uploaded);
+            }else {
+                rm.setFirmaUrl(null);
             }
 
             // Validar los campos obligatorios
@@ -122,15 +167,12 @@ public class ReporteVacioService {
 
             if (valido) {
 
-                rm = reportesGestion.generarReporte(reporte, idUsuario, rm);
-
-
-                return ResponseEntity.ok(rm);
+                return ResponseEntity.ok(reportesGestion.generarReporte(reporte, idUsuario, rm));
             }
             
             // creación de la imagen en la base retorna el valor de nombre
 
 
-                return ResponseEntity.internalServerError().build();
+            return ResponseEntity.internalServerError().build();
     }   
 }

@@ -9,6 +9,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -49,6 +50,12 @@ public class ReporteVacioDAO{
         return rvm;
     }
 
+    @Transactional
+    public ReporteVacioModel createReporte(ReporteVacioModel cuerpo){
+        em.persist(cuerpo);
+        return cuerpo;
+    }
+
     /**
      * Obtiene el reporte vacío asociado a un usuario.
      * @param usuario El ID del usuario.
@@ -86,4 +93,49 @@ public class ReporteVacioDAO{
         
         return em.merge(rpm);
     }
+
+
+    // Asigna un reporte vacío existente a un usuario, actualizando su ubicación y hora de inicio.
+    @Transactional
+    public ReporteVacioModel assignReporte(Long idReporte, LocationRequest lugar, UsuarioModel usuario) {
+        if(this.getReporteVacio(usuario.getId()) != null) {
+            // El usuario ya tiene un reporte vacío asignado
+            return null;
+        }
+        ReporteVacioModel rvm = em.find(ReporteVacioModel.class, idReporte);
+        rvm.setLatitudInicio(lugar.getLatitud());
+        rvm.setLongitudInicio(lugar.getLongitud());
+        rvm.setUsuario(usuario);
+        rvm.setHorainicio(new Date());
+        rvm.setFecha(new Date());
+        em.persist(rvm);
+        return rvm;
+    }
+    public List<ReporteVacioModel> findAll() {
+        return em.createQuery(
+                "SELECT r FROM ReporteVacioModel r WHERE r.usuario IS NULL",
+                ReporteVacioModel.class
+            )
+            .getResultList();
+    }
+
+    
+    public ReporteVacioModel getReporteVacioById(Long idReporte) {
+        return em.find(ReporteVacioModel.class, idReporte);
+    }
+
+    @Transactional
+    public boolean deleteReporteVacioSinUsuario(Long idReporte) {
+        return em.createQuery("DELETE FROM ReporteVacioModel r WHERE r.id = :idReporte")
+                .setParameter("idReporte", idReporte)
+                .executeUpdate() > 0;
+    }
+
+    @Transactional
+    public ReporteVacioModel actualizarReporteVacioSinUsuario(ReporteVacioModel cuerpo) {
+        return    em.merge(cuerpo);
+    
+    }
+
+    
 }

@@ -3,6 +3,7 @@ package com.livingnet.back.Servicios;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,13 +33,14 @@ public class LoginService {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                                     .body(Collections.singletonMap("error", "Empty Credentials"));    
             }
-            UsuarioModel usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getMail(), usuario.getPassword());    
-            if (usuarioEncontrado != null) {
-                String token = JwtUtil.generateToken(usuarioEncontrado);
-                
+            Optional<UsuarioModel> usuarioEncontrado = usuarioGestion.buscarPorEmailYPassword(usuario.getMail(), usuario.getPassword());
+            if (usuarioEncontrado.isPresent()) {
+                UsuarioModel user = usuarioEncontrado.get();
+                String token = JwtUtil.generateToken(user);
+
                 Map<String, String> response = new HashMap<>();
                 response.put("token", token);
-                response.put("id", usuarioEncontrado.getId()+"");
+                response.put("id", user.getId()+"");
                 return ResponseEntity.ok(response);
             } else {
                 throw new Exception("Error de validacion");

@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,11 @@ public class ReportesGestion {
     @Autowired
     ReporteVacioDAO reporteVacioDAO;
 
+    /**
+     * Constructor de ReportesGestion.
+     * Inyecta la dependencia de ReportesDAO.
+     * @param reportesDAO El DAO para operaciones de reportes.
+     */
     public ReportesGestion(ReportesDAO reportesDAO) {
         this.reportesDAO = reportesDAO;
     }
@@ -50,52 +57,58 @@ public class ReportesGestion {
     /**
      * Elimina un reporte y su imagen asociada.
      * @param id El ID del reporte a eliminar.
-     * @return Un mapa con el estado de eliminación del reporte y la imagen.
+     * @return Un mapa con el estado de eliminación del reporte, imagen y firma.
      */
     public Map<String,Boolean> deleteReporte(Long id) {
         Map<String, Boolean> response = new HashMap<>();
-        response.put("reporte", reportesDAO.deleteImagen(id));
-        response.put("imagen", reportesDAO.deleteReporte(id));
+        response.put("firma", reportesDAO.deleteFirma(id));
+        response.put("imagen", reportesDAO.deleteImagen(id));
+        response.put("reporte", reportesDAO.deleteReporte(id));
         
+        
+
         return response;
     }
 
     /**
      * Actualiza un reporte existente con los nuevos datos proporcionados.
      * @param reporte El ReporteModel con los datos actualizados.
-     * @return El reporte actualizado.
+     * @return El reporte actualizado, o null si la validación falla.
      */
     public ReporteModel updateReporte(ReporteModel reporte) {
+        if (reporte.getActividad() == null ||
+            reporte.getAgencia() == null ||
+            reporte.getClima() == null ||
+            reporte.getComplejidad_actividad() == null ||
+            reporte.getCuadrilla() == null ||
+            reporte.getEstado_actividad() == null ||
+            reporte.getFormato_actividad() == null ||
+            reporte.getJefe_cuadrilla() == null ||
+            reporte.getTipo_actividad() == null ||
+            reporte.getCamara() < 0 ||
+            reporte.getConectores() < 0 ||
+            reporte.getDrop() < 0 ||
+            reporte.getKilometraje_fin() < 0 ||
+            reporte.getKilometraje_inicio() < 0 ||
+            reporte.getOnu() < 0 ||
+            reporte.getRoseta() < 0 ||
+            reporte.getRouter() < 0 ||
+            reporte.getTensores() < 0 ||
+            reporte.getId() == 0) {
+            return null;
+        }
+
         // get reporte by id
-        ReporteModel existingReporte = reportesDAO.getReporteById(reporte.getId());
-        existingReporte.setActividad(reporte.getActividad());
-        existingReporte.setAgencia(reporte.getAgencia());
-        existingReporte.setClima(reporte.getClima());
-        existingReporte.setComplejidad_actividad(reporte.getComplejidad_actividad());
-        existingReporte.setCuadrilla(reporte.getCuadrilla());
-        existingReporte.setEstado_actividad(reporte.getEstado_actividad());
-        existingReporte.setFormato_actividad(reporte.getFormato_actividad());
-        existingReporte.setFoto_url(reporte.getFoto_url());
-        existingReporte.setMotivo_retraso(reporte.getMotivo_retraso());
-        existingReporte.setObservaciones(reporte.getObservaciones());
-        existingReporte.setTipo_actividad(reporte.getTipo_actividad());
-        existingReporte.setJefe_cuadrilla(reporte.getJefe_cuadrilla());
-        existingReporte.setAyudante_tecnico(reporte.getAyudante_tecnico());
-        existingReporte.setKilometraje_inicio(reporte.getKilometraje_inicio());
-        existingReporte.setKilometraje_fin(reporte.getKilometraje_fin());
-        existingReporte.setRouter(reporte.getRouter());
-        existingReporte.setOnu(reporte.getOnu());
-        existingReporte.setDrop(reporte.getDrop());
-        existingReporte.setRoseta(reporte.getRoseta());
-        existingReporte.setTensores(reporte.getTensores());
-        existingReporte.setConectores(reporte.getConectores());
-        existingReporte.setCamara(reporte.getCamara());
+        Optional<ReporteModel> existingReporteOpt = reportesDAO.getReporteById(reporte.getId());
+        if (existingReporteOpt.isEmpty()) {
+            return null;
+        }
+        ReporteModel existingReporte = existingReporteOpt.get();
 
+        // Excluir campos sensibles para evitar manipulación de datos: fechas, horas y coordenadas
+        BeanUtils.copyProperties(reporte, existingReporte, "id", "fecha", "horainicio", "horafin", "latitudInicio", "longitudInicio", "latitudFin", "longitudFin");
 
-
-
-
-        return reportesDAO.updateReporte(reporte);    
+        return reportesDAO.updateReporte(existingReporte);
     }
 
     /**
@@ -174,27 +187,30 @@ public class ReportesGestion {
         reporte.setLatitudFin(rpm.getLatitudFin());
         reporte.setLongitudFin(rpm.getLongitudFin());
 
-        //obtener los valores de reporte
+        ///// datos entrantes
+
         reporte.setAgencia(rpm.getAgencia());
         reporte.setActividad(rpm.getActividad());
-        reporte.setCuadrilla(rpm.getCuadrilla());
-        reporte.setJefe_cuadrilla(rpm.getJefe_cuadrilla());
+        reporte.setNombreCliente(rpm.getNombreCliente());
+        reporte.setCedulaCliente(rpm.getCedulaCliente());
+        reporte.setNumeroContrato(rpm.getNumeroContrato());
+        reporte.setTelefonos(rpm.getTelefonos());
+        reporte.setCorreo(rpm.getCorreo());
+        reporte.setPlan(rpm.getPlan());
+        reporte.setCoordenadas(rpm.getCoordenadas());
+        reporte.setValorCobrar(rpm.getValorCobrar());
         reporte.setTipo_actividad(rpm.getTipo_actividad());
         reporte.setFormato_actividad(rpm.getFormato_actividad());
         reporte.setComplejidad_actividad(rpm.getComplejidad_actividad());
         reporte.setEstado_actividad(rpm.getEstado_actividad());
         reporte.setClima(rpm.getClima());
-
-        // Strings opcionales
+        reporte.setCuadrilla(rpm.getCuadrilla());
+        reporte.setJefe_cuadrilla(rpm.getJefe_cuadrilla());
         reporte.setAyudante_tecnico(rpm.getAyudante_tecnico());
         reporte.setMotivo_retraso(rpm.getMotivo_retraso());
         reporte.setObservaciones(rpm.getObservaciones());
-
-        // Doubles
         reporte.setKilometraje_inicio(rpm.getKilometraje_inicio());
         reporte.setKilometraje_fin(rpm.getKilometraje_fin());
-
-        // Ints
         reporte.setRouter(rpm.getRouter());
         reporte.setOnu(rpm.getOnu());
         reporte.setDrop(rpm.getDrop());
@@ -202,13 +218,23 @@ public class ReportesGestion {
         reporte.setTensores(rpm.getTensores());
         reporte.setConectores(rpm.getConectores());
         reporte.setCamara(rpm.getCamara());
-
-
-        //eliminamos el reportevacío del usuario 
-        reporteVacioDAO.deleteReporteVacio(idUsuario);
-        return reportesDAO.addReporte(reporte);
-
         
+
+        //eliminamos el reportevacío del usuario
+        ReporteModel rm = reportesDAO.addReporte(reporte);
+        reporteVacioDAO.deleteReporteVacio(idUsuario);
+        
+        return rm;
+
+
+    }
+
+    /**
+     * Obtiene una lista de todos los reportes vacíos.
+     * @return Lista de ReporteVacioModel.
+     */
+    public List<ReporteVacioModel> getReportesVacios() {
+        return reporteVacioDAO.findAll();
     }
 
 

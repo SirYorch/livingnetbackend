@@ -16,25 +16,24 @@ import jakarta.persistence.Table;
 @Table(name = "usuarios")
 public class UsuarioModel {
 
-
-    // roles válidos por el momento, permiten validaciones y tiempo de sesión, revisar tambien clase JWTFilter en caso de cambios.
+    /** Roles válidos por el momento, permiten validaciones y tiempo de sesión. Revisar también clase JWTFilter en caso de cambios. */
     public static String ROL_ADMIN = "ADMINISTRADOR";
     public static String ROL_TECNICO = "TECNICO";
     public static String ROL_SECRETARIO = "SECRETARIA";
 
-    // variable identificadora autogeneraad
+    /** Variable identificadora autogenerada. */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // variables tipo string para almacenar correo y contraseña.
+    /** Variables tipo string para almacenar correo y contraseña. */
     @Column(unique = true, nullable = false)
     private String mail;
 
     @Column(unique = false, nullable = false)
     private String password;
-    
-    //por el momento se aceptan solo las espec[ificadas en variables estáticas
+
+    /** Por el momento se aceptan solo las especificadas en variables estáticas. */
     @Column(unique = false, nullable = false)
     private String rol;
 

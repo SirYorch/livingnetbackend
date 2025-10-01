@@ -48,41 +48,17 @@ public class ReportesService {
 
     // actualizar un reporte según su id
     @PutMapping
-    public ReporteModel updateReporte(@Valid @RequestBody ReporteModel reporte) {
-        if(
-           reporte.getActividad() !=null && 
-            reporte.getAgencia() !=null && 
-            reporte.getClima() !=null &&
-            reporte.getComplejidad_actividad()!=null && 
-            reporte.getCuadrilla() !=null && 
-            reporte.getEstado_actividad() !=null && 
-            // reporte.getFecha() !=null && 
-            reporte.getFormato_actividad() !=null && 
-            // reporte.getFoto_url() !=null && 
-            // reporte.getHorafin() !=null &&
-            // reporte.getHorainicio() !=null &&
-            reporte.getJefe_cuadrilla() !=null &&
-            reporte.getTipo_actividad() !=null&&
-            reporte.getCamara() >= 0 && 
-            reporte.getConectores()  >= 0 && 
-            reporte.getDrop()  >= 0 &&
-            reporte.getKilometraje_fin() >= 0 &&
-            reporte.getKilometraje_inicio()  >= 0 &&
-            reporte.getOnu() >= 0 &&
-            reporte.getRoseta()  >= 0 &&
-            reporte.getRouter()  >= 0 &&
-            reporte.getTensores()  >= 0 &&
-            reporte.getId() != 0 // hora de inicio, hora de fin, y ubicaciones no se editan ni aunque se cambien
-            ){
-            try{
-                ReporteModel dato  =  reportesGestion.updateReporte(reporte);
-                return dato;
-            } catch (Exception e){
-                return null;
+    public ResponseEntity<ReporteModel> updateReporte(@Valid @RequestBody ReporteModel reporte) {
+        try {
+            ReporteModel updated = reportesGestion.updateReporte(reporte);
+            if (updated != null) {
+                return ResponseEntity.ok(updated);
+            } else {
+                return ResponseEntity.badRequest().build();
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-        return null;
-        
     }
 
     // eliminar un reporte según su id
@@ -94,14 +70,9 @@ public class ReportesService {
 
     // metodo para obtener los variables distintivos de los desplegables, sirve para facilitar filtros y rellenados automáticos
     @GetMapping("/deployables")
-    public ResponseEntity<?> getDesplegables() {
+    public ResponseEntity<Map<String,List<String>>> getDesplegables() {
         Map<String,List<String>> dato = reportesGestion.getDesplegables();
-
-        if(dato.size()>0){
-            return ResponseEntity.ok(dato);
-        } else{
-            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("No se consiguieron los deplegables");
-        }
+        return ResponseEntity.ok(dato);
     }
 
 

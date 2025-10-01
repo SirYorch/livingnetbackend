@@ -18,7 +18,11 @@ public class UsuarioGestion {
 
     private final UsuarioDAO usuarioDAO;
 
-    // Inyección de la implementación concreta del DAO
+    /**
+     * Constructor de UsuarioGestion.
+     * Inyecta la dependencia de UsuarioDAO.
+     * @param usuarioDAO El DAO para operaciones de usuarios.
+     */
     public UsuarioGestion(UsuarioDAO usuarioDAO) {
         this.usuarioDAO = usuarioDAO;
     }
@@ -38,7 +42,7 @@ public class UsuarioGestion {
      * @param password La contraseña del usuario.
      * @return El UsuarioModel si las credenciales son válidas, null en caso contrario.
      */
-    public UsuarioModel buscarPorEmailYPassword(String email, String password) {
+    public Optional<UsuarioModel> buscarPorEmailYPassword(String email, String password) {
         return usuarioDAO.buscarPorEmailYPassword(email, password);
         
     }
@@ -83,7 +87,7 @@ public class UsuarioGestion {
      * @param mail El email del usuario.
      * @return El UsuarioModel correspondiente, o null si no se encuentra.
      */
-    public UsuarioModel getUsuarioPorMail(String mail) {
+    public Optional<UsuarioModel> getUsuarioPorMail(String mail) {
         return usuarioDAO.getUsuarioPorMail(mail);
     }
 }

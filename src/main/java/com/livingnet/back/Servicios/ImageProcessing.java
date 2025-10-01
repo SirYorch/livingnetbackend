@@ -25,7 +25,8 @@ public class ImageProcessing {
 
 
     // variable estática de dónde se guardan las imagenes, usada para eliminar imagenes, crear imagenes, y obtener imagenes.
-    public static final String UPLOAD_DIR = "uploads/";
+    public static final String UPLOAD_SIGN = "uploads/signatures/";
+    public static final String UPLOAD_IMG = "uploads/images/";
 
     // private final ReportesGestion reportesGestion;
 
@@ -36,11 +37,10 @@ public class ImageProcessing {
 
 
     // permite subir imagenes, serán guardadas la variable estática según upload DIR
-    @PostMapping("/upload")
-    public String uploadImage(@RequestParam("file") MultipartFile file) {
+    public String uploadImage(MultipartFile file) {
         try {
             // Crear carpeta si no existe
-            File uploadDir = new File(UPLOAD_DIR);
+            File uploadDir = new File(UPLOAD_IMG);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
@@ -55,7 +55,7 @@ public class ImageProcessing {
             // Construir la ruta del archivo
             String filePath = "file-" + formattedDateTime + ".jpg"; // las imagenes se construyen de la misma forma siempre, utilizamos file- la fecha, hora minutos y segundos a la que fue subida, y el archivo de extensión.
             
-            File savedFile = new File(UPLOAD_DIR +filePath.toLowerCase());
+            File savedFile = new File(UPLOAD_IMG +filePath.toLowerCase());
             try (FileOutputStream fos = new FileOutputStream(savedFile)) {
                 fos.write(file.getBytes());
             }
@@ -82,7 +82,7 @@ public class ImageProcessing {
     @GetMapping("/{file}")
     public ResponseEntity<byte[]> getImage(@PathVariable String file) {
         try {
-            Path imgPath = new File(UPLOAD_DIR + file.toLowerCase()).toPath();
+            Path imgPath = new File(UPLOAD_IMG + file.toLowerCase()).toPath();
             System.out.println(imgPath.toString());
 
             if (!Files.exists(imgPath)) {
@@ -108,9 +108,87 @@ public class ImageProcessing {
     }
 
 
-    public void deleteImagen(String valor) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteImagen'");
+    //método para poder visualizar las imagenes desde la vista del frontend.
+    @GetMapping("sign/{file}")
+    public ResponseEntity<byte[]> getSignature(@PathVariable String file) {
+        try {
+            Path imgPath = new File(UPLOAD_SIGN + file.toLowerCase()).toPath();
+            System.out.println(imgPath.toString());
+
+            if (!Files.exists(imgPath)) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            byte[] bytes = Files.readAllBytes(imgPath);
+
+            // Detectar tipo MIME automáticamente
+            String mimeType = Files.probeContentType(imgPath);
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.parseMediaType(mimeType));
+
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
+
+        } catch (IOException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public static void deleteImagen(String url) {
+        File oldfile = new File(ImageProcessing.UPLOAD_IMG + url.toLowerCase());
+        if (oldfile.exists()) {
+            oldfile.delete();
+        }
+    }
+    public static void deleteSignature(String url) {
+        File oldfile = new File(ImageProcessing.UPLOAD_SIGN + url.toLowerCase());
+        if (oldfile.exists()) {
+            oldfile.delete();
+        }
+    }
+
+
+    public String uploadSignature(MultipartFile file) {
+          try {
+            // Crear carpeta si no existe
+            File uploadDir = new File(UPLOAD_SIGN);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Guardar la imagen
+            // Definir el formato: dd-MM-yyyy-HH-mm-ss
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy-HH-mm-ss");
+            LocalDateTime now = LocalDateTime.now();
+            // Formatear fecha y hora
+            String formattedDateTime = now.format(formatter);
+
+            // Construir la ruta del archivo
+            String filePath = "file-" + formattedDateTime + ".jpg"; // las imagenes se construyen de la misma forma siempre, utilizamos file- la fecha, hora minutos y segundos a la que fue subida, y el archivo de extensión.
+            
+            File savedFile = new File(UPLOAD_SIGN +filePath.toLowerCase());
+            try (FileOutputStream fos = new FileOutputStream(savedFile)) {
+                fos.write(file.getBytes());
+            }
+
+            
+
+            ReporteModel reporte = new ReporteModel();
+            reporte.setFoto_url(filePath);
+            //reporte  = runPythonScript(filePath, reporte);
+
+            // scheduleImageValidation(filePath);
+                
+            return filePath;
+
+        } catch (IOException e) {
+            ReporteModel errorReporte = new ReporteModel();
+            errorReporte.setFoto_url(null);
+            return null;
+        }
     }
     
     

@@ -8,6 +8,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ public class JwtFilter implements Filter {
     private final String sinPermiso = "Permisos Insuficientes";
     private final String invalida = "Acción invalida";
     private final String usuarioInexistente= "Usuario no existe";
+    private final String tokenInvalido= "Token inválido";
 
     public JwtFilter(UsuarioGestion usuarioGestion) {
         this.usuarioGestion = usuarioGestion;
@@ -55,6 +57,10 @@ public class JwtFilter implements Filter {
             String token = authHeader.substring(7);
             try {
                 String username = jwtUtil.extractUsername(token);
+
+                if (username == null) {
+                    throw new Exception(tokenInvalido);
+                }
                 
                 ValidatePermissions(req, username);
                 
@@ -66,9 +72,12 @@ public class JwtFilter implements Filter {
                 } else if(e.getMessage().equals(invalida)){
                     System.out.print("invalida");
                     res.sendError(409, e.getMessage());    
-                } 
-                System.out.print(e);
-                res.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                } else if(e.getMessage().equals(tokenInvalido)){
+                    res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token faltante");
+                }else{
+                    System.out.print(e);
+                    res.sendError(HttpServletResponse.SC_CONFLICT, e.getMessage());
+                }
             }
         } else {
             
@@ -85,69 +94,72 @@ public class JwtFilter implements Filter {
      */
     private void ValidatePermissions(HttpServletRequest req, String username) throws Exception {
 
-        UsuarioModel user = usuarioGestion.getUsuarioPorMail(username);
-        if(user == null){
+        Optional<UsuarioModel> userOpt = usuarioGestion.getUsuarioPorMail(username);
+        if(userOpt.isEmpty()){
             throw new Exception(usuarioInexistente);
         }
+
+        UsuarioModel user = userOpt.get();
 
 
         //si método == usuarios, solo se puede hacer un get.
         StringBuilder du = new StringBuilder(FilterConfig.direccionUsers); //String para usuarios
         du.deleteCharAt(7);
-        du.deleteCharAt(6); 
-        
-        // 
+        du.deleteCharAt(6);
+
+        //
         StringBuilder drv = new StringBuilder(FilterConfig.direccionReporteVacio); //String para reportesVacio
         drv.deleteCharAt(7);
-        drv.deleteCharAt(6); 
+        drv.deleteCharAt(6);
 
 
         ///AGREGAR NUEVAS DIRECCIONES DESDE EL FILTRO PARA PODER MANIPULARLAS
-        /// 
-        /// 
-        /// 
-        /// 
-        /// 
-        
-        
+        ///
+        ///
+        ///
+        ///
+        ///
+
+
+
 
         // si es solicitud a usuarios
         if (req.getRequestURI().contains(du)){
 
             if(req.getMethod().equals("GET")){ // todos pueden hacer get
                 return;
-            } 
+            }
 
             if (!user.getRol().equals(UsuarioModel.ROL_ADMIN)) { //  si es distinto de get, y no es admin hay error
                 throw new Exception(this.sinPermiso);
             }
 
             if(req.getMethod().equals("DELETE")) { // un administrador no se puede eliminar a si mismo
-                
+
                 if(validateParity(req, user)){ // si id coincide error
                     throw new Exception(this.invalida);
                 }
 
             }
         }
-        
-        
+
+
         //si es solicitud a reportesvacio
         if (req.getRequestURI().contains(drv)){
-            
+
             // solo se puede generar si es tecnico
 
             if(!validateParity(req, user)){ // si el id es distinto da error
                 throw new Exception(this.invalida);
             }
 
-            
-            if(user.getRol().equals(UsuarioModel.ROL_TECNICO) || user.getRol().equals(UsuarioModel.ROL_ADMIN)){ 
+
+            if(user.getRol().equals(UsuarioModel.ROL_TECNICO) || user.getRol().equals(UsuarioModel.ROL_ADMIN)){
                 return;
             }
         }
-    
-    
+
+
     }
 
     /**

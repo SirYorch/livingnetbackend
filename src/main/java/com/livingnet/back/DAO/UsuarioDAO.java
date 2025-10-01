@@ -39,16 +39,17 @@ public class UsuarioDAO {
      * Busca un usuario por email y contraseña para validación de credenciales.
      * @param mail El email del usuario.
      * @param password La contraseña del usuario.
-     * @return El UsuarioModel si las credenciales son correctas, null en caso contrario.
+     * @return Un Optional con el UsuarioModel si las credenciales son correctas, vacío en caso contrario.
      */
-    public UsuarioModel buscarPorEmailYPassword(String mail, String password) {
+    public Optional<UsuarioModel> buscarPorEmailYPassword(String mail, String password) {
         try {
-            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail AND u.password = :password", UsuarioModel.class)
+            UsuarioModel user = em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail AND u.password = :password", UsuarioModel.class)
                     .setParameter("mail", mail)
                     .setParameter("password", password)
                     .getSingleResult();
+            return Optional.ofNullable(user);
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -68,7 +69,6 @@ public class UsuarioDAO {
      */
     @Transactional
     public UsuarioModel save(UsuarioModel usuario) {
-        System.out.println(usuario.getRol()+" "+usuario.getMail()+" "+usuario.getPassword()+" "+ usuario.getId());
         em.persist(usuario);
         return usuario;
     }
@@ -98,39 +98,16 @@ public class UsuarioDAO {
     /**
      * Obtiene un usuario por su email.
      * @param mail El email del usuario.
-     * @return El UsuarioModel correspondiente, o null si no se encuentra.
+     * @return Un Optional con el UsuarioModel correspondiente, vacío si no se encuentra.
      */
-    public UsuarioModel getUsuarioPorMail(String mail) {
+    public Optional<UsuarioModel> getUsuarioPorMail(String mail) {
         try {
-            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail", UsuarioModel.class)
+            UsuarioModel user = em.createQuery("SELECT u FROM UsuarioModel u WHERE u.mail = :mail", UsuarioModel.class)
                     .setParameter("mail", mail)
                     .getSingleResult();
-        } catch (jakarta.persistence.NoResultException nre) {
-            System.out.println("NoResultException -> no existe usuario con mail=" + mail);
-            return null;
-        } catch (jakarta.persistence.NonUniqueResultException nue) {
-            System.out.println("NonUniqueResultException -> hay >1 usuario con mail=" + mail);
-            nue.printStackTrace();
-            return null;
+            return Optional.ofNullable(user);
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * Obtiene un usuario por su ID.
-     * @param id El ID del usuario.
-     * @return El UsuarioModel correspondiente, o null si no se encuentra.
-     */
-    public UsuarioModel getUsuarioPorId(Long id) {
-        try {
-            return em.createQuery("SELECT u FROM UsuarioModel u WHERE u.id = :id", UsuarioModel.class)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            return Optional.empty();
         }
     }
 }

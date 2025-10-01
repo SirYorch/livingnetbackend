@@ -8,22 +8,22 @@ import java.util.Date;
  * Incluye parámetros de paginación y criterios de filtro.
  */
 public class ReporteRequest {
-    
-    // Entero para filtrar la cantidad de datos que se envían en el getReportesFiltrado de la clase ReportesDAO
+
+    /** Entero para filtrar la cantidad de datos que se envían en el getReportesFiltrado de la clase ReportesDAO. */
     private int datos;
-    
-    // Entero para empezar en otro dígito, si se muestran 10 datos por pagina, y estamos en la segunda pagina, se muestran datos desde el 10 hasta el 19 contando el primero como 0.
+
+    /** Entero para empezar en otro dígito, si se muestran 10 datos por página, y estamos en la segunda página, se muestran datos desde el 10 hasta el 19 contando el primero como 0. */
     private int pagina;
 
-    //  filtros válidos en las solicitudes de filtro
+    /** Filtros válidos en las solicitudes de filtro. */
     private Date fecha;
-    
+
     private String agencia;
     private String cuadrilla;
-    private String jefe_cuadrilla;  
+    private String jefe_cuadrilla;
     private String ayudante_tecnico;
     private String tipo_actividad;
-    private String formato_actividad;   
+    private String formato_actividad;
     private String complejidad_actividad;
     private String estado_actividad;
     private String retraso;

@@ -51,14 +51,33 @@ public class ReporteVacioModel {
     private String latitudInicio;
     @Column(nullable = true)
     private String longitudInicio;
-
-
-
+    
     
     @Column(nullable = true)
     private String latitudFin;
     @Column(nullable = true)
     private String longitudFin;
+
+    
+    // datos de cliente
+    @Column(nullable = true)
+    private String nombreCliente;
+    @Column(nullable = true)
+    private String cedulaCliente;
+    @Column(nullable = true)
+    private String numeroContrato;
+    @Column(nullable = true)
+    private String telefonos;
+    @Column(nullable = true)
+    private String correo;
+    @Column(nullable = true)
+    private String plan;
+    @Column(nullable = true)
+    private String coordenadas;
+    @Column(nullable = true)
+    private String valorCobrar;
+    @Column(nullable = true)
+    private String firmaUrl;
 
 
 
@@ -366,5 +385,80 @@ public class ReporteVacioModel {
     public void setLongitudFin(String longitudFin) {
         this.longitudFin = longitudFin;
     }
+
+
+    public String getNombreCliente() {
+        return this.nombreCliente;
+    }
+
+    public void setNombreCliente(String nombreCliente) {
+        this.nombreCliente = nombreCliente;
+    }
+
+    public String getCedulaCliente() {
+        return this.cedulaCliente;
+    }
+
+    public void setCedulaCliente(String cedulaCliente) {
+        this.cedulaCliente = cedulaCliente;
+    }
+
+    public String getNumeroContrato() {
+        return this.numeroContrato;
+    }
+
+    public void setNumeroContrato(String numeroContrato) {
+        this.numeroContrato = numeroContrato;
+    }
+
+    public String getTelefonos() {
+        return this.telefonos;
+    }
+
+    public void setTelefonos(String telefonos) {
+        this.telefonos = telefonos;
+    }
+
+    public String getCorreo() {
+        return this.correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public String getPlan() {
+        return this.plan;
+    }
+
+    public void setPlan(String plan) {
+        this.plan = plan;
+    }
+
+    public String getCoordenadas() {
+        return this.coordenadas;
+    }
+
+    public void setCoordenadas(String coordenadas) {
+        this.coordenadas = coordenadas;
+    }
+
+    public String getValorCobrar() {
+        return this.valorCobrar;
+    }
+
+    public void setValorCobrar(String valorCobrar) {
+        this.valorCobrar = valorCobrar;
+    }
+
+    public String getFirmaUrl() {
+        return this.firmaUrl;
+    }
+
+    public void setFirmaUrl(String firmaUrl) {
+        this.firmaUrl = firmaUrl;
+    }
+
+
 
 }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -87,11 +88,8 @@ public class ReportesDAO {
     public Boolean deleteImagen(Long id) {
         ReporteModel reporte = em.find(ReporteModel.class, id);
         if (reporte != null && reporte.getFoto_url() != null && !reporte.getFoto_url().isEmpty()) {
-            java.io.File file = new java.io.File(ImageProcessing.UPLOAD_DIR + reporte.getFoto_url());
-            if (file.exists()) {
-                file.delete();
-                return true;
-            }
+            ImageProcessing.deleteImagen(reporte.getFoto_url());
+            return true;
         }
         return false;
     }
@@ -250,22 +248,37 @@ public class ReportesDAO {
      * @return true si el archivo existe, false en caso contrario.
      */
     public boolean checkImage(String path) {
-        File file = new File(ImageProcessing.UPLOAD_DIR + path);
+        File file = new File(ImageProcessing.UPLOAD_IMG + path);
         return file.exists();
     }
 
     /**
      * Obtiene un reporte por su ID.
      * @param id El ID del reporte.
-     * @return El objeto ReporteModel correspondiente, o null si no se encuentra.
+     * @return Un Optional con el objeto ReporteModel correspondiente, vacío si no se encuentra.
      */
-    public ReporteModel getReporteById(long id) {
-         try {
-            return em.createQuery("SELECT r FROM ReporteModel r WHERE id = :id", ReporteModel.class)
+    public Optional<ReporteModel> getReporteById(long id) {
+        try {
+            ReporteModel reporte = em.createQuery("SELECT r FROM ReporteModel r WHERE id = :id", ReporteModel.class)
                     .setParameter("id", id)
                     .getSingleResult();
-        } catch (Exception e){
-            return null;
+            return Optional.of(reporte);
+        } catch (Exception e) {
+            return Optional.empty();
         }
+    }
+
+    /**
+     * Elimina la firma asociada a un reporte por su ID.
+     * @param id El ID del reporte cuya firma se desea eliminar.
+     * @return true si la firma fue eliminada, false en caso contrario.
+     */
+    public Boolean deleteFirma(Long id) {
+        ReporteModel reporte = em.find(ReporteModel.class, id);
+        if (reporte != null && reporte.getFirmaUrl() != null && !reporte.getFirmaUrl().isEmpty()) {
+            ImageProcessing.deleteSignature(reporte.getFirmaUrl());
+            return true;
+        }
+        return false;
     }
 }
